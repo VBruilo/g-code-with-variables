@@ -1,0 +1,20 @@
+# Node modules (Hauptverzeichnis und Unterverzeichnisse)
+node_modules/
+mock-config-server/node_modules/
+
+# Build- und dist-Ordner
+dist/
+
+# Umgebungsvariablen (falls vorhanden)
+.env
+.env.local
+.env.development
+.env.production
+
+# Log-Dateien
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript Build-Outputs
+*.tsbuildinfo
