@@ -59,7 +59,6 @@ Dadurch wird eine Anfrage gesendet und das erwartete Verhalten getestet.
 ## Struktur des Projekts
 
 ```
-/dist                     # Kompilierte Dateien (falls vorhanden)
 /mock-config-server       # Mock Server mit Express
   ├── index.js            # Startpunkt für den Mock Server
   ├── callPrint.js        # Beispielaufruf für den Mock Server
