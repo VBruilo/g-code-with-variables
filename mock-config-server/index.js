@@ -4,12 +4,15 @@ const port = 3001;
 
 app.get('/api/parameters', (req, res) => {
   res.json({
-    Z_HEIGHT: "120",
-    SPEED: "300",
-    TEMPERATURE: "200"
+    FIRST_PRINTING_HEAD: "0",
+    SECOND_PRINTING_HEAD: "1",
   });
 });
 
 app.listen(port, () => {
   console.log(`Mock Config Server listening on port ${port}`);
 });
+
+
+
+
