@@ -6,6 +6,9 @@ app.get('/api/parameters', (req, res) => {
   res.json({
     FIRST_PRINTING_HEAD: "0",
     SECOND_PRINTING_HEAD: "1",
+    PRINTING_HEAD: "0",
+    X_SHIFT: "10",
+    Y_SHIFT: "10",
   });
 });
 

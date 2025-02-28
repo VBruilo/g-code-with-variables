@@ -20,3 +20,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 .DS_Store
+
+/parameterized_g-code/final.gcode
+/parameterized_g-code/deprecated/*
