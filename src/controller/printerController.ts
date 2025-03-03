@@ -45,16 +45,14 @@ class PrinterController {
     console.log('[PrinterController] Sending final G-Code to printer...');
     console.log(`... G-Code length: ${gcode.length}`);
 
-    console.log('--- BEGIN FINAL G-CODE ---');
-    console.log(gcode);
-    console.log('--- END FINAL G-CODE ---');
-
+    
     //Irgendwann OctoPrint oder so?
+    console.log('[PrinterController] Printing finished!');
   }
 }
 
 interface TransformResponse {
-    finalGCode: string;
-  }
+  finalGCode: string;
+}
 
 export const printerController = new PrinterController();
