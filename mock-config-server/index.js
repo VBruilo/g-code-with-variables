@@ -4,11 +4,8 @@ const port = 3001;
 
 app.get('/api/parameters', (req, res) => {
   res.json({
-    FIRST_PRINTING_HEAD: "0",
-    SECOND_PRINTING_HEAD: "1",
     PRINTING_HEAD: "0",
-    X_SHIFT: "10",
-    Y_SHIFT: "10",
+    FILAMENT_TYPE: "1", // 0: ASA, 1: PETG, 2: PLA, 3: ...
   });
 });
 

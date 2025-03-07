@@ -6,6 +6,9 @@ const router = Router();
 
 router.post('/print', async (req, res) => {
   try {
+    
+    const { numberOfModels, configSet } = req.body;
+    //await printerController.startPrint(numberOfModels, configSet);
 
     await printerController.startPrint();
 

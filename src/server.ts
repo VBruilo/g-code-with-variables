@@ -1,6 +1,5 @@
 // src/server.ts
 import express, { Request, Response } from 'express';
-import transformerRoutes from './routes/transformerRoutes';
 import controllerRoutes from './routes/controllerRoutes';
 
 
@@ -12,7 +11,6 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routen
-app.use('/api', transformerRoutes);
 app.use('/api', controllerRoutes);
 
 // Health-Check

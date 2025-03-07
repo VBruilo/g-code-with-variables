@@ -1,5 +1,5 @@
 // src/routes/transformerRoutes.ts
-import { Router, Request, Response } from 'express';
+/*import { Router, Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
 import path from 'path';
@@ -28,3 +28,4 @@ router.post('/transform', async (req: Request, res: Response) => {
 });
 
 export default router;
+*/

@@ -23,3 +23,5 @@ yarn-error.log*
 
 /parameterized_g-code/final.gcode
 /parameterized_g-code/deprecated/*
+/mock-octo
+/mock-config-server
