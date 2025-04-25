@@ -9,6 +9,11 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@jamesgopsill/prusa-link@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@jamesgopsill/prusa-link/-/prusa-link-0.1.2.tgz#97a6f86146779d113b4587e0978287a056f559d4"
+  integrity sha512-niZjuNpav4dvOJaZ2zgu5xGEPjeD5kzWGOBDhP6TsBP4zjwj2UxdPoI347h3RDPtQPoqtCt0zLLMjm5xP0xUCA==
+
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@jridgewell/resolve-uri/-/resolve-uri-3.1.2.tgz#7a0ee601f60f99a20c7c7c5ff0c80388c1189bd6"

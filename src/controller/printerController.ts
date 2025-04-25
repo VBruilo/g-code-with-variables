@@ -2,24 +2,23 @@
 import { promises as fs } from 'fs';
 import axios from 'axios';
 import path from 'path';
-import FormData from 'form-data';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
+import defaultParams from '../utilities/defaultParameters.json';
 
 class PrinterController {
   private configServerUrl: string;
   private transformer: GCodeTransformer;
-  private octoUrl: string;
-  private octoApiKey: string;
+// PrusaLink URL
+  private prusaLinkUrl: string;
 
   constructor() {
-    //Config-Server
+    // Config-Server
     this.configServerUrl = 'http://localhost:3001';
 
-    //OctoPrint Configurations
-    this.octoUrl = process.env.OCTOPRINT_URL || 'http://localhost:3002';
-    this.octoApiKey = process.env.OCTOPRINT_API_KEY || 'OCTO_API_KEY';
+    // PrusaLink Configurations – anpassen via ENV oder direkt
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
 
-    //Transformer
+    // Transformer
     this.transformer = new GCodeTransformer();
   }
 
@@ -27,34 +26,51 @@ class PrinterController {
     // 1) Finales G-Code erzeugen
     const finalGCode = await this.fetchTransformedGCode();
 
-    // 2) G-Code an OctoPrint senden und Druck starten
+    // 2) G-Code an den Drucker (über PrusaLink API) senden und Druck starten
     await this.sendToPrinter(finalGCode);
   }
   
   // Liest die parameterisierte Datei ein und transformiert sie:
   private async fetchTransformedGCode(): Promise<string> {
     console.log('[PrinterController] fetchTransformedGCode() start...');
-    // Pfad zur ursprünglichen parametrierten G-Code-Datei
+
+    // 1) Parameter vom Config-Server holen
+    const configResponse = await axios.get<{ FILAMENT_TYPE: string }>(`${this.configServerUrl}/api/parameters`);
+    const params = configResponse.data;
+
+    // 2) Passende G-Code-Datei basierend auf FILAMENT_TYPE auswählen
+    const filamentType = params.FILAMENT_TYPE ?? defaultParams.FILAMENT_TYPE;
+
+    let gcodeTemplateFile;
+    if (filamentType === 'PLA') {
+      gcodeTemplateFile = 'one_color_PLA.gcode';
+    } else if (filamentType === 'PETG') {
+      gcodeTemplateFile = 'one_color_PETG.gcode';
+    } else {
+      gcodeTemplateFile = 'test.gcode';
+      // Wenn keiner der beiden Werte passt, Fehler werfen
+      //throw new Error(
+        //`[PrinterController] Unsupported FILAMENT_TYPE: ${params.FILAMENT_TYPE}`
+      //);
+    }
+
+    // 3) Original-G-Code-Datei lesen
     const gcodeFilePath = path.join(
       process.cwd(), 
       'parameterized_g-code', 
-      'one_color_parameterized.gcode');
-
+      gcodeTemplateFile
+    );
     const gcodeContent = await fs.readFile(gcodeFilePath, 'utf-8');
 
-    // Parameter vom Config-Server holen
-    const configResponse = await axios.get(`${this.configServerUrl}/api/parameters`);
-    const params = configResponse.data;
-
-    // G-Code mithilfe des Transformers anpassen
+    // 4) G-Code mithilfe des Transformers anpassen
     const finalGCode = await this.transformer.transformGCode(gcodeContent, params);
 
-    // Den finalen G-Code in eine Datei schreiben, wenn du ihn local auch noch behalten willst
+    // 5) Optional: Den finalen G-Code in eine Datei schreiben
     const outputFilePath = path.join(
       process.cwd(), 
       'parameterized_g-code', 
-      'final.gcode');
-
+      'final.gcode'
+    );
     await fs.writeFile(outputFilePath, finalGCode, 'utf-8');
 
     console.log('[PrinterController] fetchTransformedGCode() done.');
@@ -63,31 +79,31 @@ class PrinterController {
 
 
   private async sendToPrinter(gcode: string): Promise<void> {
-    console.log('[PrinterController] Sending final G-Code to printer via OctoPrint...');
+    console.log('[PrinterController] Sending final G-Code to printer via PrusaLink API...');
 
-    // FormData erstellen
-    const form = new FormData();
-
-    // Wir wandeln den String in einen Buffer um, damit FormData es als Datei-Upload verarbeiten kann.
+    // G-Code in einen Buffer umwandeln, damit er als Binärdatei gesendet werden kann.
     const gcodeBuffer = Buffer.from(gcode, 'utf-8');
+    const fileSize = gcodeBuffer.length;
 
-    // "file" -> G-Code-Inhalt aus dem Buffer
-    // filename: 'final.gcode' -> Der Name, unter dem OctoPrint es speichern soll
-    form.append('file', gcodeBuffer, { filename: 'final.gcode' });
+    // Ziel-Endpoint: Hier laden wir die Datei unter dem Storage "local" hoch,
+    // und benennen sie beispielsweise "final.gcode".
+    const endpointUrl = `${this.prusaLinkUrl}/api/v1/files/local/final.gcode`;
 
-    // "select" & "print" sorgen dafür, dass OctoPrint die Datei direkt nach Upload druckt
-    form.append('select', 'true');
-    form.append('print', 'true');
-
-    await axios.post(`${this.octoUrl}/api/files/local`, form, {
+    // Die PrusaLink API erwartet einen PUT-Request mit den folgenden Headers:
+    // - Content-Length: Größe der Datei
+    // - Content-Type: application/octet-stream
+    // - Print-After-Upload: "?1" (um den Druck direkt zu starten)
+    // - Overwrite: "?1" (falls eine gleichnamige Datei überschrieben werden soll)
+    await axios.put(endpointUrl, gcodeBuffer, {
       headers: {
-        'X-Api-Key': this.octoApiKey,
-        ...form.getHeaders()
+        'Content-Length': fileSize,
+        'Content-Type': 'application/octet-stream',
+        'Print-After-Upload': '?1',
+        'Overwrite': '?1'
       }
     });
 
-    console.log('[PrinterController] File uploaded and print started via OctoPrint!');
-    console.log('[PrinterController] Printing finished (or in progress).');
+    console.log('[PrinterController] File uploaded and print started via PrusaLink API!');
   }
 }
 

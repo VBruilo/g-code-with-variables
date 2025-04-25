@@ -7,8 +7,9 @@ const router = Router();
 router.post('/print', async (req, res) => {
   try {
     
-    const { numberOfModels, configSet } = req.body;
-    //await printerController.startPrint(numberOfModels, configSet);
+    const { numberOfModels, configSetID } = req.body;
+    //await printerController.startPrint(numberOfModels, configSetID);
+    //Welches Programm (Coin, Würfel, etc.) soll ausgeführt werden?
 
     await printerController.startPrint();
 
