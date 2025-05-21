@@ -30,7 +30,7 @@ class PrinterController {
     // 2) G-Code an den Drucker (über PrusaLink API) senden und Druck starten
     await this.sendToPrinter(finalGCode);
   }
-  
+
   // Liest die parameterisierte Datei ein und transformiert sie:
   private async fetchTransformedGCode(): Promise<string> {
     console.log('[PrinterController] fetchTransformedGCode() start...');
@@ -72,6 +72,7 @@ class PrinterController {
       'parameterized_g-code', 
       'final.gcode'
     );
+
     await fs.writeFile(outputFilePath, finalGCode, 'utf-8');
 
     console.log('[PrinterController] fetchTransformedGCode() done.');

@@ -19,7 +19,7 @@ export function flattenConfigParameters(
       result.FILAMENT_TYPE = String(mat.content[0].value);
     }
   }
-  
+
   // 2) width
   const width = params['width'];
   if (width?.content.length) {
@@ -31,7 +31,7 @@ export function flattenConfigParameters(
   if (height?.content.length) {
     result.LAYERS = Number(height.content[0].value); //TODO: anpassen je nach Einheit (cm oder mm), ein Layer = 0.2mm
   }
-
+  
   // 4) top-surface
   const top = params['top-surface'];
   if (top) {
