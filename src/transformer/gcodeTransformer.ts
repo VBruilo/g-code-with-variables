@@ -1,17 +1,12 @@
-// src/transformer/gcodeTransformer.ts
+import fs from 'fs';
+import path from 'path';
 import handlebars from 'handlebars';
 import { registerHandlebarsHelpers } from '../helpers/handlebarsHelpers';
 import defaultParams from '../utilities/defaultParameters.json';
+import { superModels } from '../utilities/superModels';
 
 interface GCodeParameters {
-  [key: string]: string | number | Record<string, any>;
-}
-
-interface PlaceModelsOptions {
-  count: number;
-  columns: number;
-  spacingX: number;
-  spacingY: number;
+  [key: string]: string | number | boolean | any;
 }
 
 export class GCodeTransformer {
@@ -21,39 +16,65 @@ export class GCodeTransformer {
   }
 
   public async transformGCode(
-    gcodeContent: string, 
+    gcodeContent: string,
     params: Partial<GCodeParameters>
   ): Promise<string> {
     const mergedParams: GCodeParameters = {
       ...defaultParams,
       ...params
     };
-
-    mergedParams.placeModels = this.calculatePlaceModels(mergedParams);
-  
-    return this.replacePlaceholders(gcodeContent, mergedParams);
+    const withModels = this.assembleGCode(gcodeContent, mergedParams);
+    return this.replacePlaceholders(withModels, mergedParams);
   }
 
-  private calculatePlaceModels(params: any): PlaceModelsOptions {
-      // Annahme: params enthält z.B. NUMBER_OF_COINS, MODEL_SIZE und CENTER
-      const numCoins = Number(params.NUMBER_OF_COINS);
-    
-      // CENTER wird als String "45 45" übermittelt – alternativ als Objekt { x: 45, y: 45 }
-      // Für den Moment nehmen wir an, dass der Modellmittelpunkt innerhalb des Feldes bei (45,45) liegt.
-      // Die Sicherheitszone (cell size) setzen wir fest auf 90.
-      const spacingX = 90;
-      const spacingY = 90;
+  private assembleGCode(
+    templateContent: string,
+    params: GCodeParameters
+  ): string {
+    const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
+    if (!placeholderRegex.test(templateContent)) {
+      throw new Error('Models placeholder not found in G-code template.');
+    }
+
+    const material = String(params.FILAMENT_TYPE ?? params.material ?? 'PLA');
+    const sizes: number[] = Array.isArray(params.MODEL_SIZES_CM)
+      ? (params.MODEL_SIZES_CM as any[]).map(s => Number(s))
+      : [];
+    const count = sizes.length;
+    const spacingX = Number(params.SPACING_X ?? params.spacingX ?? 90);
+    const spacingY = Number(params.SPACING_Y ?? params.spacingY ?? 90);
+    const maxColumns = Number(params.MAX_COLUMNS ?? params.maxColumns ?? 4);
+    const columns = Math.max(1, Math.min(count, maxColumns));
+
+    const available = superModels[material] || [];
+    const selected = sizes.map(size => {
+      const idx = size - 1;
+      if (idx < 0 || idx >= available.length) {
+        throw new Error(`Model block for ${size}cm not found in superModels[${material}]`);
+      }
+      return available[idx];
+    });
+
+    let assembled = '';
+    selected.forEach((block, i) => {
+      const col = i % columns;
+      const row = Math.floor(i / columns);
+      const offsetX = col * spacingX;
+      const offsetY = row * spacingY;
+
+      assembled += `G1 X${offsetX} Y${offsetY}\n`;
+      assembled += `G92 X0 Y0\n`;
+      assembled += `${block.trim()}\n`;
+      assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
+      assembled += `G92 X0 Y0\n`;
       
-      // Maximal 4 Spalten, da 360/90 = 4
-      const maxColumns = 4;
-      // Falls weniger Modelle gedruckt werden, kann die Spaltenzahl dynamisch angepasst werden:
-      const columns = numCoins < maxColumns ? numCoins : maxColumns;
-    
-      return { count: numCoins, columns, spacingX, spacingY };
+    });
+
+    return templateContent.replace(placeholderRegex, assembled.trim());
   }
- 
+
   private replacePlaceholders(
-    gcode: string, 
+    gcode: string,
     params: GCodeParameters
   ): string {
     const template = handlebars.compile(gcode);

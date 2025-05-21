@@ -19,6 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(port, () => {
+  console.timeEnd('startup');
   console.log(`Server is running on http://localhost:${port}`);
 });
 
