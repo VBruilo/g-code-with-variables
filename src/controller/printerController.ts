@@ -4,6 +4,7 @@ import axios from 'axios';
 import path from 'path';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
 import defaultParams from '../utilities/defaultParameters.json';
+import { ConfigServerResponse } from '../types/configServer';
 
 class PrinterController {
   private configServerUrl: string;
@@ -35,12 +36,12 @@ class PrinterController {
     console.log('[PrinterController] fetchTransformedGCode() start...');
 
     // 1) Parameter vom Config-Server holen
-    const configResponse = await axios.get<{ FILAMENT_TYPE: string }>(`${this.configServerUrl}/api/parameters`);
-    const params = configResponse.data;
+    const configResponse = await axios.get<{ConfigServerResponse}>(`${this.configServerUrl}/api/parameters`);
+    const rawParams = configResponse.data.parameters;
 
     // 2) Passende G-Code-Datei basierend auf FILAMENT_TYPE auswählen
-    const filamentType = params.FILAMENT_TYPE ?? defaultParams.FILAMENT_TYPE;
-
+    const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value ?? defaultParams.FILAMENT_TYPE;
+    
     let gcodeTemplateFile;
     if (filamentType === 'PLA') {
       gcodeTemplateFile = 'one_color_PLA.gcode';
@@ -63,7 +64,7 @@ class PrinterController {
     const gcodeContent = await fs.readFile(gcodeFilePath, 'utf-8');
 
     // 4) G-Code mithilfe des Transformers anpassen
-    const finalGCode = await this.transformer.transformGCode(gcodeContent, params);
+    const finalGCode = await this.transformer.transformGCode(gcodeContent, rawParams);
 
     // 5) Optional: Den finalen G-Code in eine Datei schreiben
     const outputFilePath = path.join(

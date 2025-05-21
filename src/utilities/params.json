@@ -11,11 +11,9 @@
     "content": [ ],
     "parameters": {
         "coin-printing-head-no":{
-            
             "content": [ { "value": 1} ]
         },
         "coin-material":{
-        
             "content": [ { "value": "PETG"} ]
         }
     }
@@ -34,10 +32,10 @@
         "logo":{
             "content": [ { "value": "SNET" } ]
         },
-        "coin-printing-head-no":{
+        "logo-printing-head-no":{
             "content": [ { "value": 2}]
         },
-        "coin-material":{
+        "logo-material":{
             "content": [ { "value": "PETG"} ]
         }
     }
