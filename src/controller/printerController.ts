@@ -3,13 +3,11 @@ import { promises as fs } from 'fs';
 import axios from 'axios';
 import path from 'path';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
-import defaultParams from '../utilities/defaultParameters.json';
 import { ConfigServerResponse } from '../types/configServer';
 
 class PrinterController {
   private configServerUrl: string;
   private transformer: GCodeTransformer;
-// PrusaLink URL
   private prusaLinkUrl: string;
 
   constructor() {
@@ -36,11 +34,11 @@ class PrinterController {
     console.log('[PrinterController] fetchTransformedGCode() start...');
 
     // 1) Parameter vom Config-Server holen
-    const configResponse = await axios.get<{ConfigServerResponse}>(`${this.configServerUrl}/api/parameters`);
+    const configResponse = await axios.get<ConfigServerResponse>(`${this.configServerUrl}/api/parameters`);
     const rawParams = configResponse.data.parameters;
 
     // 2) Passende G-Code-Datei basierend auf FILAMENT_TYPE auswählen
-    const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value ?? defaultParams.FILAMENT_TYPE;
+    const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value || 'PETG';
     
     let gcodeTemplateFile;
     if (filamentType === 'PLA') {

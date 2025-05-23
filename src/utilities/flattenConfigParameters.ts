@@ -14,16 +14,16 @@ export function flattenConfigParameters(
     if (first_head?.content.length) {
       result.FIRST_PRINTING_HEAD = Number(first_head.content[0].value);
     }
-    const mat = coinColor.parameters['coin-material'];
-    if (mat?.content.length) {
-      result.FILAMENT_TYPE = String(mat.content[0].value);
+    const first_mat = coinColor.parameters['coin-material'];
+    if (first_mat?.content.length) {
+      result.FIRST_FILAMENT_TYPE = String(first_mat.content[0].value);
     }
   }
 
   // 2) width
   const width = params['width'];
   if (width?.content.length) {
-    result.MODEL_SIZES_CM = width.content.map(c => Number(c.value));
+    result.MODEL_SIZE = width.content.map(c => Number(c.value));
   }
 
   // 3) height
@@ -39,21 +39,20 @@ export function flattenConfigParameters(
     if (logo?.content.length) {
       result.LOGO = String(logo.content[0].value);
     }
-
     const second_head = top.parameters['logo-printing-head-no'];
     if (second_head?.content.length) {
       result.SECOND_PRINTING_HEAD = Number(second_head.content[0].value);
     }
-    const mat = top.parameters['logo-material'];
-    if (mat?.content.length) {
-      result.FILAMENT_TYPE = String(mat.content[0].value);
+    const second_mat = top.parameters['logo-material'];
+    if (second_mat?.content.length) {
+      result.SECOND_FILAMENT_TYPE = String(second_mat.content[0].value);
     }
   }
 
   // 5) bottom-surface: QR Code
   const bottom = params['bottom-surface'];
   if (bottom) {
-    const qr = bottom.parameters['qr-code'];
+    const qr = bottom.parameters['qr-code']; 
     if (qr?.content.length) {
       result.QR_CODE = Number(qr.content[0].value);
     }
@@ -69,7 +68,7 @@ export function flattenConfigParameters(
     }
     if (y?.content.length) {
       result.POS_Y = Number(y.content[0].value);
-    }
+    } 
   }
 
   return result;

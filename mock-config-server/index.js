@@ -10,7 +10,7 @@ const app = express();
 const port = 3001;
 
 app.get('/api/parameters', (req, res) => {
-  const filePath = path.join(__dirname, 'parameters.json');
+  const filePath = path.join(__dirname, 'params.json');
 
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
