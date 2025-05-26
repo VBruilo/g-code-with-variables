@@ -59,12 +59,11 @@ Dadurch wird eine Anfrage gesendet und das erwartete Verhalten getestet.
 ## Struktur des Projekts
 
 ```
-/dist                     # Kompilierte Dateien (falls vorhanden)
 /mock-config-server       # Mock Server mit Express
-  ├── index.js            # Startpunkt für den Mock Server
-  ├── callPrint.js        # Beispielaufruf für den Mock Server
-  ├── package.json        # Abhängigkeiten für den Mock Server
-/parameterized_g-code     # Hauptserver mit TypeScript
+  ├── index.js            
+  ├── callPrint.js     
+  ├── package.json        
+/parameterized_g-code     # G-Code Dateien
   ├── src
       ├── config          # Konfigurationsdateien
       ├── controller      # Steuerungslogik
