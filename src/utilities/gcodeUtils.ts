@@ -27,13 +27,14 @@ export function extractTemplate(content: string): string {
  * Konsolidiert Default- und User-Parameter
  * und wandelt sie in ein ParsedParams-Objekt um.
  */
-export function parseParams(params: GCodeParameters): ParsedParams {
-    return {
-      material: String(params.FIRST_FILAMENT_TYPE ?? 'PETG'),
-      sizes: Array.isArray(params.MODEL_SIZE) ? (params.MODEL_SIZE as any[]).map(s => Number(s)) : [],
-      spacingX: Number(params.SPACING_X ?? 90),
-      spacingY: Number(params.SPACING_Y ?? 90),
-      maxColumns: Number(params.MAX_COLUMNS ?? 4)
-    };
+export function parseParams(p: GCodeParameters): ParsedParams {
+  const { FIRST_FILAMENT_TYPE = 'PETG', MODEL_SIZE, SPACING_X = 90, SPACING_Y = 90, MAX_COLUMNS = 4 } = p;
+  return {
+    material: String(FIRST_FILAMENT_TYPE),
+    sizes: Array.isArray(MODEL_SIZE) ? MODEL_SIZE.map(Number) : [],
+    spacingX: Number(SPACING_X),
+    spacingY: Number(SPACING_Y),
+    maxColumns: Number(MAX_COLUMNS),
+  };
 }
 

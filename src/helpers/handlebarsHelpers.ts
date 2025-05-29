@@ -3,40 +3,6 @@ import handlebars from 'handlebars';
 
 export function registerHandlebarsHelpers(): void {
 
-   // Vergleich von beliebig vielen Werten
-   handlebars.registerHelper('ifEquals', function (this: any, ...args: any[]) {
-    const options = args.pop(); // Das letzte Argument ist immer options
-    if (args.length === 0) {
-      return options.inverse(this);
-    }
-    const first = args[0];
-    const allEqual = args.every(arg => arg == first);
-    return allEqual ? options.fn(this) : options.inverse(this);
-  });
-
-  // Switch-Helper: Speichert den Wert, der verglichen werden soll
-  handlebars.registerHelper('switch', function(this: any, value, options) {
-    this._switch_value_ = value;
-    const html = options.fn(this);
-    delete this._switch_value_;
-    return html;
-  });
-
-  // Case-Helper: Vergleicht den Fall mit dem gespeicherten Wert
- handlebars.registerHelper('case', function(this: any, value, options) {
-    if (value == this._switch_value_) {
-      return options.fn(this);
-    }
-  });  
-
-  //Case-Multiple-Helper: Vergleicht den Fall mit mehreren gespeicherten Werten
-  handlebars.registerHelper('caseMultiple', function(this: any, values, options) {
-    const valueArray = values.split(',').map((v: any) => v.trim());
-    if (valueArray.indexOf(String(this._switch_value_)) !== -1) {
-      return options.fn(this);
-    }
-  });
-
   handlebars.registerHelper('getData', (
     keyValue: any,     
     dataObject: any,
@@ -138,30 +104,4 @@ export function registerHandlebarsHelpers(): void {
     return output;
   });
 
-  handlebars.registerHelper('placeModels', function(
-    this: any,
-    count: number,
-    columns: number,
-    spacingX: number,
-    spacingY: number,
-    options: handlebars.HelperOptions
-  ): string {
-    let result = '';
-    for (let i = 0; i < count; i++) {
-      const col = i % columns;
-      const row = Math.floor(i / columns);
-      const offsetX = col * spacingX;
-      const offsetY = row * spacingY;
-      
-      // Setze den Offset vor dem Modell
-      result += `G1 X${offsetX} Y${offsetY}\nG92 X0 Y0\n`;
-      
-      // Führe den Block mit dem erweiterten Kontext aus
-      result += options.fn({ ...this, index: i, offsetX, offsetY });
-      
-      // Setze den Offset wieder zurück (Rückfahrt)
-      result += `G1 X-${offsetX} Y-${offsetY}\nG92 X0 Y0\n`;
-    }
-    return result;
-  });  
 }

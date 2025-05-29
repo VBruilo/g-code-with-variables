@@ -1,7 +1,6 @@
 # Node modules (Hauptverzeichnis und Unterverzeichnisse)
 node_modules/
-mock-config-server/node_modules/
-
+mock-octo/mock_uploads
 # Build- und dist-Ordner
 dist/
 
@@ -23,5 +22,3 @@ yarn-error.log*
 
 /parameterized_g-code/final.gcode
 /parameterized_g-code/deprecated
-/mock-octo
-/mock-config-server

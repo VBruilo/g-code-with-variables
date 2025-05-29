@@ -25,8 +25,8 @@
   ],
   "test": [
     {
-      "size": 1,
-      "path": "./gcode/test/1mm.gcode",
+      "size": 20,
+      "path": "./gcode/test/20mm.gcode",
       "boundingBox": { "width": 10, "depth": 10 }
     },
     {

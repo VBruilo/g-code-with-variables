@@ -7,7 +7,6 @@ export interface SnippetParams {
   [key: string]: any;
 }
 
-
 /**
  * Sucht in `params` den Wert zu `paramKey`, lädt das Snippet und ersetzt
  * den Platzhalter `placeholderRegex` in `content` durch den geladenen Block.
@@ -22,13 +21,13 @@ export async function insertSnippet(
 ): Promise<string> {
   const raw = params[paramKey];
   if (raw == null) return content;
-  const key = String(raw);               // als Text verwenden
+  const key = String(raw);
   const snippet = await loadSnippet(type, key);
   return content.replace(placeholderRegex, snippet);
 }
 
 /**
- * Lädt den G-Code-Block für `type` und `key` (z.B. qr/2 → ./gcode/qr/2.gcode)
+ * Lädt den G-Code-Block für `type` und `key` (z.B. logo/SNET → ./gcode/logo/SNET.gcode)
  */
 export async function loadSnippet(
   type: string,

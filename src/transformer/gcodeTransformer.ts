@@ -20,19 +20,10 @@ export class GCodeTransformer {
     const flat = flattenConfigParameters(rawParams);
     const merged = { ...defaultParams, ...flat };
 
-    // 1) QR-Code einfügen
-    let content = await insertSnippet(
-      gcodeContent,
-      merged,
-      'QR_CODE',
-      'qr',
-      /;;\s*QR_CODE_PLACEHOLDER/
-    );
+    // 1) Modell einfügen
+    let content = await this.modelPlacement(gcodeContent, merged);
 
-    // 2) Modell einfügen
-    content = await this.modelPlacement(content, merged);
-
-    // 3) Logo einfügen
+    // 2) Logo einfügen
     content = await insertSnippet(
       content,
       merged,
@@ -41,7 +32,7 @@ export class GCodeTransformer {
       /;;\s*LOGO_PLACEHOLDER/
     );
 
-    // 4) Handlebars-Platzhalter ersetzen
+    // 3) Handlebars-Platzhalter ersetzen
     return this.replacePlaceholders(content, merged);
   }
 
