@@ -4,6 +4,7 @@ import axios from 'axios';
 import path from 'path';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
 import { ConfigServerResponse } from '../types/configServer';
+import { JobStatus } from '../types/jobStatus';
 
 class PrinterController {
   private configServerUrl: string;
@@ -105,6 +106,92 @@ class PrinterController {
 
     console.log('[PrinterController] File uploaded and print started via PrusaLink API!');
   }
+
+  public async getCurrentJobId(): Promise<string | null> {
+    console.log('[PrinterController] Getting current job ID from PrusaLink API...');
+    const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`);
+    try {
+        
+
+        if (resp.status === 204) {
+            return null;
+        }
+
+        if (resp.status === 200) {
+            const job = resp.data as { id: number };
+            console.log(`[PrinterController] Current job ID: ${job.id}`);
+            return job.id.toString();
+        }
+
+        return null;
+    } catch (error) {
+        throw new Error(`PrusaLink getCurrentJobId failed with status ${resp.status}`);
+    }
+  }
+
+  public async getPrintStatus(coinJobId: string): Promise<JobStatus> {
+    try {
+        console.log(`[PrinterController] getPrintStatus() for job ID: ${coinJobId}`);
+
+        const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`);
+
+       
+        // 204: kein aktiver Job
+        if (resp.status === 204) {
+            return {
+                id: parseInt(coinJobId, 10),
+                state: 'FINISHED',
+                progress: 100,
+                timePrinting: 0,
+                timeRemaining: 0,
+            };
+        }
+
+        // 200: Job-Daten im Body
+        const job = resp.data as {
+        id: number;
+        state: 'PRINTING'| 'PAUSED'| 'FINISHED'| 'STOPPED'| 'ERROR';
+        progress: number;
+        time_printing: number;
+        time_remaining: number;
+        inaccurate_estimates?: boolean;
+        };
+
+        return {
+        id:               job.id,
+        state:            job.state,
+        progress:         job.progress,
+        timePrinting:     job.time_printing,
+        timeRemaining:    job.time_remaining,
+        inaccurateEstimates: job.inaccurate_estimates,
+        };
+    } catch (err: any) {
+        console.error('[PrinterController] getPrintStatus error:', err.message);
+        // Bei API-Fehler einen Error-Status zurückgeben
+        return {
+        id:               parseInt(coinJobId, 10),
+        state:            'ERROR',
+        progress:         0,
+        timePrinting:     0,
+        timeRemaining:    0,
+        };
+    }
+  }
+
+  public async pausePrint(coinJobId: string): Promise<void> {
+    console.log(`[PrinterController] pausePrint() for job ID: ${coinJobId}`);
+    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`);
+  }
+
+  public async resumePrint(coinJobId: string): Promise<void> {
+    console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
+    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`);
+  }
+
+   public async cancelPrint(coinJobId: string): Promise<void> {
+    console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
+    await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`);
+  }
 }
 
-export const printerController = new PrinterController();
+export const printerController = new PrinterController(); 

@@ -20,7 +20,7 @@ M73 P87 R0
 G4 S0
 G1 E-20 F2100
 ; Filament-specific end gcode
-M104 S70 T1
+M104 S70 T{{PRINTING_HEAD}}
 ; Change Tool1 -> Tool2 (layer 10)
 G1 F21000
 P0 S1 L2 D0
