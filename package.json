@@ -1,6 +1,6 @@
 {
   "name": "parameterized_g_code",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Bachelor Thesis. G-Code with Variables: Generation of parameterised G-Code",
   "main": "index.js",
   "private": true,
@@ -14,7 +14,7 @@
     "format": "prettier --write 'src/**/*.{ts,tsx,json,md}'"
   },
   "keywords": [],
-  "author": "",
+  "author": "Vlad <v.bruilo@icloud.com>",
   "license": "MIT",
   "dependencies": {
     "@jamesgopsill/prusa-link": "^0.1.2",
@@ -41,5 +41,6 @@
     "ts-jest": "^29.3.4",
     "ts-node": "^10.0.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "repository": "https://github.com/VBruilo/g-code-with-variables.git"
 }
