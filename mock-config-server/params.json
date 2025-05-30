@@ -30,7 +30,7 @@
     "content": [ ],
     "parameters": {
         "logo":{
-            "content": [ { "value": "SNET" } ]
+            "content": [ { "value": "PROCEED" } ]
         },
         "logo-printing-head-no":{
             "content": [ { "value": 2}]

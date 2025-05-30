@@ -9,7 +9,6 @@ router.post('/prints/parameterized/coin', async (req, res) => {
   try {
     
     const { machineConfigID, configSetID } = req.body;
-    //await printerController.startPrint(numberOfModels, configSetID);
 
     await printerController.startPrint();
 

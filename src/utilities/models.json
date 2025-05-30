@@ -13,14 +13,24 @@
   ],
   "PETG": [
     {
-      "size": 1,
-      "path": "./gcode/PETG/1cm.gcode",
+      "size": 20,
+      "path": "./gcode/PETG/20mm.gcode",
       "boundingBox": { "width": 10, "depth": 10 }
     },
     {
-      "size": 2,
-      "path": "./gcode/PETG/2cm.gcode",
-      "boundingBox": { "width": 20, "depth": 20 }
+      "size": 23.75,
+      "path": "./gcode/PETG/23.75mm.gcode",
+      "boundingBox": { "width": 10, "depth": 20 }
+    },
+    {
+      "size": 25.75,
+      "path": "./gcode/PETG/25.75mm.gcode",
+      "boundingBox": { "width": 10, "depth": 20 }
+    },
+    {
+      "size": 30,
+      "path": "./gcode/PETG/30mm.gcode",
+      "boundingBox": { "width": 10, "depth": 20 }
     }
   ],
   "test": [
