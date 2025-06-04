@@ -1,10 +1,25 @@
 // src/routes/controllerRoutes.ts
-import { json, Router } from 'express';
+import { Router } from 'express';
 import { printerController } from '../controller/printerController';
-import axios from 'axios';
 
+/**
+ * Express router providing endpoints for controlling the printer.
+ *
+ * These routes are mounted under the `/api` prefix in {@link ../server.ts | server.ts}.
+ */
 const router = Router();
 
+/**
+ * POST `/prints/parameterized/coin`
+ *
+ * Starts a print job for a parameterised coin.
+ *
+ * @param req.body.machineConfigID - Identifier of the machine configuration.
+ * @param req.body.configSetID - Identifier of the configuration set.
+ *
+ * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 500 - `{ error: string }` on failure.
+ */
 router.post('/prints/parameterized/coin', async (req, res) => {
   try {
     
@@ -26,6 +41,15 @@ router.post('/prints/parameterized/coin', async (req, res) => {
 );
 
 
+/**
+ * GET `/prints/parameterized/coin/getJobId`
+ *
+ * Retrieves the ID of the currently running print job.
+ *
+ * @returns 200 - `{ jobId: string }` when a job is active.
+ * @returns 404 - `{ error: string }` when no job is running.
+ * @returns 500 - `{ error: string }` on internal errors.
+ */
 router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
   try {
 
@@ -49,6 +73,17 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
 );
 
 
+/**
+ * GET `/prints/parameterized/coin/:coinJobId/status`
+ *
+ * Returns the status of a running print job.
+ *
+ * @param req.params.coinJobId - ID of the coin job whose status is requested.
+ *
+ * @returns 200 - `JobStatus` object describing the current progress.
+ * @returns 400 - `{ error: string }` when the `coinJobId` parameter is missing.
+ * @returns 500 - `{ error: string }` on internal errors.
+ */
 router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
     // 1) Pfad-Parameter auslesen
     const { coinJobId } = req.params;
@@ -76,6 +111,17 @@ router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
 );
 
 
+/**
+ * PUT `/prints/parameterized/coin/:coinJobId/pause`
+ *
+ * Pauses the running print job.
+ *
+ * @param req.params.coinJobId - ID of the job to pause.
+ *
+ * @returns 204 - When the job was paused successfully.
+ * @returns 400 - `{ error: string }` when `coinJobId` is missing.
+ * @returns 500 - `{ error: string }` on internal errors.
+ */
 router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
     const { coinJobId } = req.params;
 
@@ -101,6 +147,17 @@ router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
   }
 );
 
+/**
+ * PUT `/prints/parameterized/coin/:coinJobId/resume`
+ *
+ * Resumes a paused print job.
+ *
+ * @param req.params.coinJobId - ID of the job to resume.
+ *
+ * @returns 204 - When the job was resumed successfully.
+ * @returns 400 - `{ error: string }` when `coinJobId` is missing.
+ * @returns 500 - `{ error: string }` on internal errors.
+ */
 router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
     const { coinJobId } = req.params;
     
@@ -126,6 +183,17 @@ router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
   }
 );
 
+/**
+ * DELETE `/prints/parameterized/coin/:coinJobId/cancel`
+ *
+ * Cancels a running print job.
+ *
+ * @param req.params.coinJobId - ID of the job to cancel.
+ *
+ * @returns 204 - When the job was cancelled successfully.
+ * @returns 400 - `{ error: string }` when `coinJobId` is missing.
+ * @returns 500 - `{ error: string }` on internal errors.
+ */
 router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) => {
   const { coinJobId } = req.params;
 
