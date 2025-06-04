@@ -1,12 +1,22 @@
 // src/helpers/handlebarsHelpers.ts
 import handlebars from 'handlebars';
 
+/**
+ * Registers all custom Handlebars helpers that are used when transforming
+ * G-code templates. The helpers provide small utility functions for the
+ * templates and this function should be called once at application start.
+ */
 export function registerHandlebarsHelpers(): void {
 
+  /**
+   * Returns the element at `index` from the array stored under `keyValue` in
+   * `dataObject`. Example usage in a template:
+   * `{{getData "sizes" params index}}`.
+   */
   handlebars.registerHelper('getData', (
-    keyValue: any,     
+    keyValue: any,
     dataObject: any,
-    index: number, 
+    index: number,
     options: Handlebars.HelperOptions
   ): any => {
     // keyValue in einen String umwandeln, da die Keys in deinem JSON als Strings vorliegen
@@ -28,6 +38,10 @@ export function registerHandlebarsHelpers(): void {
     return arr[index];
   });
 
+  /**
+   * Repeats the wrapped block `count` times and exposes the iteration index via
+   * `{{index}}` within the block.
+   */
   handlebars.registerHelper('repeat', function (count, options) {
     let out = '';
     for (let i = 0; i < count; i++) {
@@ -40,12 +54,20 @@ export function registerHandlebarsHelpers(): void {
     return out;
   });
   
+  /**
+   * Calculates a Z value by adding `index * offset` to `baseZ` and returns the
+   * result formatted with three decimal places.
+   */
   handlebars.registerHelper('calcZ', function (index, baseZ, offset) {
     // baseZ und offset werden als Strings übergeben => parseFloat
     const zValue = parseFloat(baseZ) + (index * parseFloat(offset));
     return zValue.toFixed(3);  // 3 Nachkommastellen
   });
 
+  /**
+   * Shifts `originalZ` by `(repeatCount - 1) * layerHeight` to account for
+   * repeated layers.
+   */
   handlebars.registerHelper('shiftZ', function (originalZ, repeatCount, layerHeight) {
     // originalZ: Ursprünglicher Z-Wert (z.B. "0.8")
     // repeatCount: Anzahl der Wiederholungen (z.B. "3")
@@ -65,6 +87,10 @@ export function registerHandlebarsHelpers(): void {
     return result.toFixed(3); // z. B. auf drei Nachkommastellen formatieren
   });
 
+  /**
+   * Inserts `value` at the given position of a five element list and returns the
+   * list as a comma separated string.
+   */
   handlebars.registerHelper('insertValue', (pos: number, value: unknown, options: handlebars.HelperOptions): string => {
     // Array mit fünf Standardwerten
     const arr: string[] = ['0.00', '0.00', '0.00', '0.00', '0.00'];
@@ -79,6 +105,10 @@ export function registerHandlebarsHelpers(): void {
     return arr.join(', ');
   });
 
+  /**
+   * Generates commands to switch off all heater heads except the currently
+   * active one.
+   */
   handlebars.registerHelper('offHeaters', (printingHead: number, options: handlebars.HelperOptions): string => {
     // Der aktive Druckkopf als Zahl
     const active: number = printingHead;
