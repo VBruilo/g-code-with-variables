@@ -20,5 +20,5 @@ yarn-error.log*
 
 .DS_Store
 
-/parameterized_g-code/final.gcode
-/parameterized_g-code/deprecated
+# G-Code Dateien
+

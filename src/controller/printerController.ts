@@ -185,11 +185,11 @@ class PrinterController {
 
   public async resumePrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
-    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`);
+    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/resume`);
   }
 
    public async cancelPrint(coinJobId: string): Promise<void> {
-    console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
+    console.log(`[PrinterController] cancelPrint() for job ID: ${coinJobId}`);
     await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`);
   }
 }

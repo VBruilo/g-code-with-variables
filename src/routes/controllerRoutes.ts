@@ -9,7 +9,6 @@ router.post('/prints/parameterized/coin', async (req, res) => {
   try {
     
     const { machineConfigID, configSetID } = req.body;
-    //await printerController.startPrint(numberOfModels, configSetID);
 
     await printerController.startPrint();
 
@@ -27,10 +26,10 @@ router.post('/prints/parameterized/coin', async (req, res) => {
 );
 
 
-router.get('prints/parameterized/coin/getJobId', async (req, res) => {
+router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
   try {
 
-    const jobId = printerController.getCurrentJobId();
+    const jobId = await printerController.getCurrentJobId();
     if (!jobId) {
       return res
         .status(404)
@@ -138,10 +137,7 @@ router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) =
 
   try {
     await printerController.cancelPrint(coinJobId);
-    return res
-      .status(204)
-      .json({ message: 'Print cancelled successfully!' });
-          
+    return res.sendStatus(204)
   } catch (err: any) {
     console.error(
       '[ControllerRoutes] Error while cancelling print:',

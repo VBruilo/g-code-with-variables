@@ -5,8 +5,7 @@ import defaultParams from '../utilities/defaultParameters.json';
 import { ConfigParamDef } from '../types/configServer';
 import { flattenConfigParameters } from '../utilities/flattenConfigParameters';
 import { insertModelBlocks, calculateLayout, loadModels } from '../utilities/modelPlacement';
-import { parseParams, GCodeParameters, extractTemplate } from '../utilities/gcodeUtils';
-import { insertSnippet } from '../utilities/snippetPlacement';
+import { parseParams, GCodeParameters, extractTemplate, loadSnippet } from '../utilities/gcodeUtils';
 
 export class GCodeTransformer {
   constructor() {
@@ -23,16 +22,7 @@ export class GCodeTransformer {
     // 1) Modell einfügen
     let content = await this.modelPlacement(gcodeContent, merged);
 
-    // 2) Logo einfügen
-    content = await insertSnippet(
-      content,
-      merged,
-      'LOGO',
-      'logo',
-      /;;\s*LOGO_PLACEHOLDER/
-    );
-
-    // 3) Handlebars-Platzhalter ersetzen
+    // 2) Handlebars-Platzhalter ersetzen
     return this.replacePlaceholders(content, merged);
   }
 
@@ -42,7 +32,8 @@ export class GCodeTransformer {
     const parsed = parseParams(mergedParams);
     const loaded = await loadModels(parsed);
     const placements = calculateLayout(loaded, parsed);
-    const modelBlocks = insertModelBlocks(template, placements);
+    const logoSnippet = await loadSnippet('logo', String(mergedParams.LOGO))
+    const modelBlocks = insertModelBlocks(template, placements, logoSnippet);
     return modelBlocks;
   }
 

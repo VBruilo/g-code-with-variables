@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import modelsMetadata from './models.json';
 
+
 export interface ModelMeta {
   size: number;
   path: string;
@@ -31,9 +32,7 @@ export interface ParsedParams {
 
 type ModelsConfig = Record<string, ModelMeta[]>;
 
-/**
- * Lädt die G-Code-Blöcke für das gegebene Material und die gewünschten Größen.
- */
+
 export async function loadModels(parsed: ParsedParams): Promise<LoadedModel[]> {
     const entries = (modelsMetadata as ModelsConfig)[parsed.material] || [];
     const loaded: LoadedModel[] = [];
@@ -54,9 +53,7 @@ export async function loadModels(parsed: ParsedParams): Promise<LoadedModel[]> {
     return loaded;
   }
 
-/**
- * Berechnet für jedes geladene Modell die X/Y-Offsets basierend auf Spacing und Max-Columns.
- */
+
 export function calculateLayout(models: LoadedModel[], parsed: ParsedParams): Placement[] {
     const placements: Placement[] = [];
     const columns = Math.max(1, Math.min(models.length, parsed.maxColumns));
@@ -80,20 +77,22 @@ export function calculateLayout(models: LoadedModel[], parsed: ParsedParams): Pl
     return placements;
   }
 
-/**
- * Generiert den finalen G-Code-Block für alle Modellausrichtungen.
- */
-export function insertModelBlocks(template: string, placements: Placement[]): string {
+
+export function insertModelBlocks(
+  template: string, 
+  placements: Placement[],
+  logoSnippet: string): string {
     const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
     let assembled = '';
     for (const { model, offsetX, offsetY } of placements) {
     // G92 und G1 Logik ist gerade nicht relevant, da es nur ein Modell geben wird
 
-     // assembled += `G1 X${offsetX} Y${offsetY}\n`;
-     // assembled += `G92 X0 Y0\n`;
+      assembled += `G1 X${offsetX} Y${offsetY}\n`;
+      assembled += `G92 X0 Y0\n`;
       assembled += model.content + '\n';
-     // assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
-     // assembled += `G92 X0 Y0\n`;
+      assembled += logoSnippet + '\n';
+      assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
+      assembled += `G92 X0 Y0\n`;
     }
     return template.replace(placeholderRegex, assembled.trim());
 }
