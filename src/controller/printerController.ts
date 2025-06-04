@@ -6,6 +6,10 @@ import { GCodeTransformer } from '../transformer/gcodeTransformer';
 import { ConfigServerResponse } from '../types/configServer';
 import { JobStatus } from '../types/jobStatus';
 
+/**
+ * Controller responsible for transforming parameterized G-code and
+ * communicating with PrusaLink to start and manage print jobs.
+ */
 class PrinterController {
   private configServerUrl: string;
   private transformer: GCodeTransformer;
@@ -22,6 +26,13 @@ class PrinterController {
     this.transformer = new GCodeTransformer();
   }
 
+  /**
+   * Creates the final G-code from the parameterized template and sends it to
+   * the printer to start the job.
+   *
+   * @throws {@link Error} When either fetching the transformed G-code or the
+   * upload to the printer fails.
+   */
   public async startPrint(): Promise<void> {
     // 1) Finales G-Code erzeugen
     const finalGCode = await this.fetchTransformedGCode();
@@ -30,7 +41,14 @@ class PrinterController {
     await this.sendToPrinter(finalGCode);
   }
 
-  // Liest die parameterisierte Datei ein und transformiert sie:
+  /**
+   * Reads the parameterized G-code template, applies parameters from the
+   * config server and stores the resulting file.
+   *
+   * @returns The fully transformed G-code ready for printing.
+   * @throws {@link Error} When reading the template, contacting the config
+   * server or writing the output fails.
+   */
   private async fetchTransformedGCode(): Promise<string> {
     console.log('[PrinterController] fetchTransformedGCode() start...');
 
@@ -78,7 +96,13 @@ class PrinterController {
     return finalGCode;
   }
 
-
+  /**
+   * Uploads the final G-code to the printer via the PrusaLink API and starts
+   * the print.
+   *
+   * @param gcode - The fully processed G-code to be printed.
+   * @throws {@link Error} When the HTTP request to PrusaLink fails.
+   */
   private async sendToPrinter(gcode: string): Promise<void> {
     console.log('[PrinterController] Sending final G-Code to printer via PrusaLink API...');
 
@@ -107,6 +131,13 @@ class PrinterController {
     console.log('[PrinterController] File uploaded and print started via PrusaLink API!');
   }
 
+  /**
+   * Retrieves the identifier of the currently running job from the PrusaLink
+   * API.
+   *
+   * @returns The job ID as a string or `null` if no job is active.
+   * @throws {@link Error} When the request fails.
+   */
   public async getCurrentJobId(): Promise<string | null> {
     console.log('[PrinterController] Getting current job ID from PrusaLink API...');
     const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`);
@@ -129,6 +160,14 @@ class PrinterController {
     }
   }
 
+  /**
+   * Retrieves the print status for the given job from PrusaLink.
+   *
+   * @param coinJobId - The identifier used by the coin application.
+   * @returns The current job status. If the request fails an error status is
+   * returned.
+   * @throws No errors are thrown; failures result in an `'ERROR'` state.
+   */
   public async getPrintStatus(coinJobId: string): Promise<JobStatus> {
     try {
         console.log(`[PrinterController] getPrintStatus() for job ID: ${coinJobId}`);
@@ -178,16 +217,34 @@ class PrinterController {
     }
   }
 
+  /**
+   * Sends a pause command for the specified print job.
+   *
+   * @param coinJobId - Identifier of the job to pause.
+   * @throws {@link Error} If the HTTP request fails.
+   */
   public async pausePrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] pausePrint() for job ID: ${coinJobId}`);
     await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`);
   }
 
+  /**
+   * Resumes a previously paused print job.
+   *
+   * @param coinJobId - Identifier of the job to resume.
+   * @throws {@link Error} If the HTTP request fails.
+   */
   public async resumePrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
     await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/resume`);
   }
 
+  /**
+   * Cancels an active print job on the printer.
+   *
+   * @param coinJobId - Identifier of the job to cancel.
+   * @throws {@link Error} If the HTTP request fails.
+   */
    public async cancelPrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] cancelPrint() for job ID: ${coinJobId}`);
     await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`);
