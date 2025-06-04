@@ -4,13 +4,13 @@
 export interface ConfigMetadata {
   name: string;
 
-  // ggf. noch weitere Felder
+  /** ggf. noch weitere Felder */
 }
 
 /** Ein einzelner Content-Eintrag aus dem Config-Response */
 export interface ConfigContent {
+  /** ggf. label, description, … */
   value: string | number;
-  // ggf. label, description, …
 }
 
 /** Definition eines Parameters mit optionalen Sub-Parametern */
