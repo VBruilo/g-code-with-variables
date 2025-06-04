@@ -6,7 +6,7 @@ import { ConfigParamDef } from '../types/configServer';
 import { flattenConfigParameters } from '../utilities/flattenConfigParameters';
 import { insertModelBlocks, calculateLayout, loadModels } from '../utilities/modelPlacement';
 import { parseParams, GCodeParameters, extractTemplate } from '../utilities/gcodeUtils';
-import { insertSnippet } from '../utilities/snippetPlacement';
+import { insertSnippet, loadSnippet } from '../utilities/snippetPlacement';
 
 export class GCodeTransformer {
   constructor() {
@@ -31,6 +31,7 @@ export class GCodeTransformer {
       'logo',
       /;;\s*LOGO_PLACEHOLDER/
     );
+
 
     // 3) Handlebars-Platzhalter ersetzen
     return this.replacePlaceholders(content, merged);

@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import modelsMetadata from './models.json';
+import {loadSnippet} from './snippetPlacement';
 
 export interface ModelMeta {
   size: number;
