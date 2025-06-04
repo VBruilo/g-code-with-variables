@@ -1,9 +1,13 @@
 // src/types/jobStatus.ts
 export interface JobStatus {
-  id: number;                 // job.id
+  /** job.id */
+  id: number;
   state: 'PRINTING'| 'PAUSED'| 'FINISHED'| 'STOPPED'| 'ERROR';
-  progress: number;           // percent complete
-  timePrinting: number;       // Sekunden
-  timeRemaining: number;      // Sekunden
+  /** percent complete */
+  progress: number;
+  /** Sekunden */
+  timePrinting: number;
+  /** Sekunden */
+  timeRemaining: number;
   inaccurateEstimates?: boolean;
 }
