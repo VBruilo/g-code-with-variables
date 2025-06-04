@@ -2,6 +2,15 @@
 
 import { ConfigParamDef } from '../types/configServer';
 
+/**
+ * Flatten the nested configuration returned by the config server into a simple key-value map.
+ *
+ * Expected keys include `coin-color`, `width`, `height`, `top-surface`, `bottom-surface` and `coordinates`.
+ * Only present values are copied to the returned object.
+ *
+ * @param params Mapping of parameter names to definitions from the config server.
+ * @returns Object containing primitive values consumed by the G-code generator.
+ */
 export function flattenConfigParameters(
   params: Record<string, ConfigParamDef>
 ): Record<string, string | number | number[]> {

@@ -19,6 +19,13 @@ export interface ParsedParams {
   maxColumns: number;
 }
 
+/**
+ * Validate that the template contains the `;; MODELS_PLACEHOLDER` marker.
+ *
+ * @param content Raw G-code template string.
+ * @returns The original content when the placeholder is present.
+ * @throws If the placeholder cannot be found.
+ */
 export function extractTemplate(content: string): string {
     const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
     if (!placeholderRegex.test(content)) {
@@ -26,6 +33,14 @@ export function extractTemplate(content: string): string {
     }
     return content;
 }
+/**
+ * Convert raw parameter values into typed numbers and strings for placement calculations.
+ *
+ * Expected keys include `FIRST_FILAMENT_TYPE`, `MODEL_SIZE`, `SPACING_X`, `SPACING_Y` and `MAX_COLUMNS`.
+ *
+ * @param p Flat parameter map usually returned by flattenConfigParameters.
+ * @returns Normalised values for downstream processing.
+ */
 
 
 export function parseParams(p: GCodeParameters): ParsedParams {
@@ -38,6 +53,14 @@ export function parseParams(p: GCodeParameters): ParsedParams {
     maxColumns: Number(MAX_COLUMNS),
   };
 }
+/**
+ * Load a G-code snippet from the `gcode/<type>` directory.
+ *
+ * @param type Subfolder under `gcode` specifying the snippet group.
+ * @param key Name of the snippet file without extension.
+ * @returns Trimmed G-code content of the snippet.
+ * @throws If reading the snippet fails.
+ */
 
 export async function loadSnippet(
   type: string,

@@ -33,6 +33,16 @@ export interface ParsedParams {
 type ModelsConfig = Record<string, ModelMeta[]>;
 
 
+/**
+ * Load G-code model files based on the given parameters.
+ *
+ * The function looks up available models for the desired material in
+ * `models.json` and reads the G-code files for each requested size.
+ *
+ * @param parsed Parsed parameters that specify material and model sizes.
+ * @returns Array of loaded models with metadata and file contents.
+ * @throws If a model entry is missing or reading a file fails.
+ */
 export async function loadModels(parsed: ParsedParams): Promise<LoadedModel[]> {
     const entries = (modelsMetadata as ModelsConfig)[parsed.material] || [];
     const loaded: LoadedModel[] = [];
@@ -51,9 +61,17 @@ export async function loadModels(parsed: ParsedParams): Promise<LoadedModel[]> {
       loaded.push({meta, content: content.trim()});
     }
     return loaded;
-  }
+}
 
 
+/**
+ * Determine XY offsets for all loaded models while avoiding overlaps.
+ *
+ * @param models Array of models loaded with {@link loadModels}.
+ * @param parsed Parsed parameters containing spacing and column information.
+ * @returns Placement objects describing where each model should be inserted in the template.
+ * @throws If a calculated placement would collide with another model.
+ */
 export function calculateLayout(models: LoadedModel[], parsed: ParsedParams): Placement[] {
     const placements: Placement[] = [];
     const columns = Math.max(1, Math.min(models.length, parsed.maxColumns));
@@ -75,11 +93,23 @@ export function calculateLayout(models: LoadedModel[], parsed: ParsedParams): Pl
       placements.push({ model: models[i], offsetX, offsetY });
     }
     return placements;
-  }
+}
 
 
+/**
+ * Insert the model G-code blocks into the provided template.
+ *
+ * Each placement is written with positioning commands and followed by a logo
+ * snippet. The MODELS_PLACEHOLDER token in the template is replaced with the
+ * assembled G-code.
+ *
+ * @param template G-code template containing the placeholder.
+ * @param placements Placement definitions returned by {@link calculateLayout}.
+ * @param logoSnippet Additional G-code to append after each model.
+ * @returns The final G-code with all models inserted.
+ */
 export function insertModelBlocks(
-  template: string, 
+  template: string,
   placements: Placement[],
   logoSnippet: string): string {
     const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
