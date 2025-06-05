@@ -21,7 +21,9 @@ class PrinterController {
     this.configServerUrl = 'http://localhost:3001';
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
-    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
+
+    this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
     this.transformer = new GCodeTransformer();
