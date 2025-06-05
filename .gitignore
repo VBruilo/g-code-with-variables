@@ -22,3 +22,4 @@ yarn-error.log*
 
 # G-Code Dateien
 
+node_modules

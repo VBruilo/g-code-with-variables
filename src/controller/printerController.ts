@@ -14,13 +14,16 @@ class PrinterController {
   private configServerUrl: string;
   private transformer: GCodeTransformer;
   private prusaLinkUrl: string;
+  private prusaLinkKey: string;
 
   constructor() {
     // Config-Server
     this.configServerUrl = 'http://localhost:3001';
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
-    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
+
+    this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
     this.transformer = new GCodeTransformer();
@@ -121,6 +124,7 @@ class PrinterController {
     // - Overwrite: "?1" (falls eine gleichnamige Datei überschrieben werden soll)
     await axios.put(endpointUrl, gcodeBuffer, {
       headers: {
+        'X-Api-Key': this.prusaLinkKey,
         'Content-Length': fileSize,
         'Content-Type': 'application/octet-stream',
         'Print-After-Upload': '?1',
