@@ -14,16 +14,25 @@ class PrinterController {
   private configServerUrl: string;
   private transformer: GCodeTransformer;
   private prusaLinkUrl: string;
+  private prusaLinkKey: string;
 
   constructor() {
     // Config-Server
     this.configServerUrl = 'http://localhost:3001';
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
-    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
+    this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
     this.transformer = new GCodeTransformer();
+  }
+
+  /**
+   * Returns common headers for authenticated PrusaLink requests.
+   */
+  private getAuthHeaders(additional: Record<string, any> = {}): Record<string, any> {
+    return { 'X-Api-Key': this.prusaLinkKey, ...additional };
   }
 
   /**
@@ -120,12 +129,12 @@ class PrinterController {
     // - Print-After-Upload: "?1" (um den Druck direkt zu starten)
     // - Overwrite: "?1" (falls eine gleichnamige Datei überschrieben werden soll)
     await axios.put(endpointUrl, gcodeBuffer, {
-      headers: {
+      headers: this.getAuthHeaders({
         'Content-Length': fileSize,
         'Content-Type': 'application/octet-stream',
         'Print-After-Upload': '?1',
         'Overwrite': '?1'
-      }
+      })
     });
 
     console.log('[PrinterController] File uploaded and print started via PrusaLink API!');
@@ -140,7 +149,9 @@ class PrinterController {
    */
   public async getCurrentJobId(): Promise<string | null> {
     console.log('[PrinterController] Getting current job ID from PrusaLink API...');
-    const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`);
+    const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`, {
+      headers: this.getAuthHeaders()
+    });
     try {
         
 
@@ -172,7 +183,9 @@ class PrinterController {
     try {
         console.log(`[PrinterController] getPrintStatus() for job ID: ${coinJobId}`);
 
-        const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`);
+        const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`, {
+        headers: this.getAuthHeaders()
+        });
 
        
         // 204: kein aktiver Job
@@ -225,7 +238,11 @@ class PrinterController {
    */
   public async pausePrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] pausePrint() for job ID: ${coinJobId}`);
-    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`);
+    await axios.put(
+      `${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
   }
 
   /**
@@ -236,7 +253,11 @@ class PrinterController {
    */
   public async resumePrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
-    await axios.put(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}/resume`);
+    await axios.put(
+      `${this.prusaLinkUrl}/api/v1/job/${coinJobId}/resume`,
+      null,
+      { headers: this.getAuthHeaders() }
+    );
   }
 
   /**
@@ -247,7 +268,9 @@ class PrinterController {
    */
    public async cancelPrint(coinJobId: string): Promise<void> {
     console.log(`[PrinterController] cancelPrint() for job ID: ${coinJobId}`);
-    await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`);
+    await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 }
 
