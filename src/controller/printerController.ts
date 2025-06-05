@@ -22,7 +22,6 @@ class PrinterController {
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
     this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
-
     this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
@@ -130,7 +129,7 @@ class PrinterController {
     // - Print-After-Upload: "?1" (um den Druck direkt zu starten)
     // - Overwrite: "?1" (falls eine gleichnamige Datei überschrieben werden soll)
     await axios.put(endpointUrl, gcodeBuffer, {
-      headers: {
+      headers: this.getAuthHeaders({
         'Content-Length': fileSize,
         'Content-Type': 'application/octet-stream',
         'Print-After-Upload': '?1',
