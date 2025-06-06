@@ -14,12 +14,12 @@
             "content": [ { "value": 1} ]
         },
         "coin-material":{
-            "content": [ { "value":"test"} ]
+            "content": [ { "value":"PETG"} ]
         }
     }
   },
 "width": {
-    "content": [ { "value": 20 }],
+    "content": [ { "value": 30 }],
     "parameters": {}
 },
 "height": {
@@ -30,7 +30,7 @@
     "content": [ ],
     "parameters": {
         "logo":{
-            "content": [ { "value": "PROCEED" } ]
+            "content": [ { "value": "TUB" } ]
         },
         "logo-printing-head-no":{
             "content": [ { "value": 2}]

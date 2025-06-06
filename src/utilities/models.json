@@ -18,8 +18,8 @@
       "boundingBox": { "width": 10, "depth": 10 }
     },
     {
-      "size": 23.75,
-      "path": "./gcode/PETG/23.75mm.gcode",
+      "size": 23.25,
+      "path": "./gcode/PETG/23.25mm.gcode",
       "boundingBox": { "width": 10, "depth": 20 }
     },
     {
