@@ -14,7 +14,7 @@
             "content": [ { "value": 1} ]
         },
         "coin-material":{
-            "content": [ { "value":"test"} ]
+            "content": [ { "value":"PETG"} ]
         }
     }
   },
@@ -33,7 +33,7 @@
             "content": [ { "value": "PROCEED" } ]
         },
         "logo-printing-head-no":{
-            "content": [ { "value": 2}]
+            "content": [ { "value": 4}]
         },
         "logo-material":{
             "content": [ { "value": "PETG"} ]

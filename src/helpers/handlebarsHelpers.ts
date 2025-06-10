@@ -88,50 +88,48 @@ export function registerHandlebarsHelpers(): void {
   });
 
   /**
-   * Inserts `value` at the given position of a five element list and returns the
-   * list as a comma separated string.
+   * Inserts multiple `value` entries at their corresponding positions and
+   * returns the full list as a comma separated string. Arguments are expected as
+   * alternating position/value pairs, e.g. `{{insertValues 0 611.69 2 83.92}}`.
    */
-  handlebars.registerHelper('insertValue', (pos: number, value: unknown, options: handlebars.HelperOptions): string => {
-    // Array mit fünf Standardwerten
+  handlebars.registerHelper('insertValues', (...args: any[]): string => {
+    const options = args.pop();
     const arr: string[] = ['0.00', '0.00', '0.00', '0.00', '0.00'];
-  
-    // Sicherstellen, dass die Position im gültigen Bereich liegt
-    if (pos >= 0 && pos < arr.length) {
-      // Den übergebenen Wert als String speichern
-      arr[pos] = String(value);
+
+    for (let i = 0; i < args.length; i += 2) {
+      const pos = Number(args[i]);
+      const val = args[i + 1];
+      if (!Number.isNaN(pos) && pos >= 0 && pos < arr.length) {
+        arr[pos] = String(val);
+      }
     }
-  
-    // Array als kommaseparierten String zurückgeben
+
     return arr.join(', ');
   });
 
   /**
-   * Generates commands to switch off all heater heads except the currently
-   * active one.
+  * Generates commands to switch off all heater heads except the first and
+   * second printing head. The active printing head is ignored, allowing two
+   * heaters to stay on while the remaining three are turned off.
+   * 
+   * Usage in templates: `{{offHeaters FIRST_PRINTING_HEAD SECOND_PRINTING_HEAD}}`
    */
-  handlebars.registerHelper('offHeaters', (printingHead: number, options: handlebars.HelperOptions): string => {
+  handlebars.registerHelper('offHeaters', (firstHead: number, secondHead: number): string => {
     // Der aktive Druckkopf als Zahl
-    const active: number = printingHead;
+    const first: number = firstHead;
+    const second: number = secondHead;
     const heads: number[] = [0, 1, 2, 3, 4];
   
-    // Entferne den aktiven Druckkopf aus der Liste
-    const otherHeads: number[] = heads.filter(head => head !== active);
+    // Remove heads that should stay on
+      const toTurnOff: number[] = heads.filter(
+        head => head !== Number(firstHead) && head !== Number(secondHead)
+      );
   
-    // Druckköpfe vor dem aktiven (aufsteigend)
-    const before: number[] = otherHeads.filter(head => head < active);
-    // Druckköpfe nach dem aktiven (absteigend sortiert)
-    const after: number[] = otherHeads.filter(head => head > active).sort((a, b) => b - a);
-  
-    // Kombiniere beide Gruppen
-    const order: number[] = before.concat(after);
-  
-    // Erzeuge den String mit den "Turn off"-Befehlen
-    let output: string = '';
-    order.forEach((head: number) => {
-      output += `M104 T${head} S0\n`;
-    });
-  
-    return output;
+
+    // Emit commands in ascending order
+      return toTurnOff
+        .map((head: number) => `M104 T${head} S0\n`)
+        .join('');
   });
 
 }
