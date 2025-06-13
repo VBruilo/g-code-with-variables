@@ -16,10 +16,10 @@
 ; extruder_colour = #FF8000;#DB5182;#3EC0FF;#FF4F4F;#FBEB7D
 ; max_layer_z = 3.00
 ; objects_info = {"objects":[{"name":"coin","polygon":[[180.676,30.013],[182.461,30.201],[183.342,30.374],[185.064,30.878],[186.715,31.583],[187.505,32.008],[189.003,32.997],[189.705,33.556],[191.002,34.796],[191.592,35.472],[192.647,36.924],[193.521,38.491],[194.201,40.151],[194.679,41.881],[194.946,43.655],[195.000,44.551],[194.946,46.345],[194.839,47.236],[194.466,48.991],[193.886,50.689],[193.521,51.509],[192.647,53.076],[191.592,54.528],[191.002,55.204],[189.705,56.444],[189.003,57.003],[187.505,57.992],[186.715,58.417],[185.064,59.122],[183.342,59.626],[182.461,59.799],[180.676,59.987],[178.882,59.960],[177.104,59.719],[176.229,59.519],[174.522,58.965],[172.894,58.210],[171.367,57.267],[170.649,56.729],[169.964,56.148],[168.705,54.870],[168.135,54.177],[167.124,52.694],[166.297,51.102],[165.957,50.271],[165.428,48.557],[165.241,47.679],[165.027,45.897],[165.027,44.103],[165.241,42.321],[165.428,41.443],[165.957,39.729],[166.297,38.898],[167.124,37.306],[168.135,35.823],[168.705,35.130],[169.964,33.852],[170.649,33.271],[172.116,32.238],[172.894,31.790],[174.522,31.035],[176.229,30.481],[177.104,30.281],[178.882,30.040]]}]}
-; filament used [mm] = {{insertValues {{FIRST_PRINTING_HEAD}} 611.69 {{SECOND_PRINTING_HEAD}} 83.92}}
-; filament used [g] = {{insertValues {{FIRST_PRINTING_HEAD}} 1.87 {{SECOND_PRINTING_HEAD}} 0.26}}
-; filament cost = {{insertValues {{FIRST_PRINTING_HEAD}} 0.06 {{SECOND_PRINTING_HEAD}} 0.01}}
-; filament used [cm3] = {{insertValues {{FIRST_PRINTING_HEAD}} 1.47 {{SECOND_PRINTING_HEAD}} 0.20}}
+; filament used [mm] = {{insertValues FIRST_PRINTING_HEAD 611.69 SECOND_PRINTING_HEAD 83.92}}
+; filament used [g] = {{insertValues FIRST_PRINTING_HEAD 1.87 SECOND_PRINTING_HEAD 0.26}}
+; filament cost = {{insertValues FIRST_PRINTING_HEAD 0.06 SECOND_PRINTING_HEAD 0.01}}
+; filament used [cm3] = {{insertValues FIRST_PRINTING_HEAD 1.47 SECOND_PRINTING_HEAD 0.20}}
 ; total filament used for wipe tower [g] = 0.00
 ; estimated printing time (normal mode) = 6m 6s
 ; estimated printing time (silent mode) = 6m 24s
@@ -3254,10 +3254,10 @@ M73 P100 R0
 M73 Q100 S0
 
 ; total toolchanges = 1
-; filament used [mm] = {{insertValues {{FIRST_PRINTING_HEAD}} 611.69 {{SECOND_PRINTING_HEAD}} 83.92}}
-; filament used [cm3] = {{insertValues {{FIRST_PRINTING_HEAD}} 1.47 {{SECOND_PRINTING_HEAD}} 0.20}}
-; filament used [g] = {{insertValues {{FIRST_PRINTING_HEAD}} 1.87 {{SECOND_PRINTING_HEAD}} 0.26}}
-; filament cost = {{insertValues {{FIRST_PRINTING_HEAD}} 0.06 {{SECOND_PRINTING_HEAD}} 0.01}}
+; filament used [mm] = {{insertValues FIRST_PRINTING_HEAD 611.69 SECOND_PRINTING_HEAD 83.92}}
+; filament used [cm3] = {{insertValues FIRST_PRINTING_HEAD 1.47 SECOND_PRINTING_HEAD 0.20}}
+; filament used [g] = {{insertValues FIRST_PRINTING_HEAD 1.87 SECOND_PRINTING_HEAD 0.26}}
+; filament cost = {{insertValues FIRST_PRINTING_HEAD 0.06 SECOND_PRINTING_HEAD 0.01}}
 ; total filament used [g] = 2.12
 ; total filament cost = 0.06
 ; total filament used for wipe tower [g] = 0.00

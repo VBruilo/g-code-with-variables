@@ -70,9 +70,9 @@ class PrinterController {
     
     let gcodeTemplateFile;
     if (filamentType === 'PLA') {
-      gcodeTemplateFile = 'one_color_PLA.gcode';
+      gcodeTemplateFile = 'PLA_start_G-code.gcode';
     } else if (filamentType === 'PETG') {
-      gcodeTemplateFile = 'one_color_PETG.gcode';
+      gcodeTemplateFile = 'PETG_start_G-code.gcode';
     } else {
       gcodeTemplateFile = 'test.gcode';
       // Wenn keiner der beiden Werte passt, Fehler werfen
