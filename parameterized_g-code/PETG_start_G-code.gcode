@@ -3183,52 +3183,32 @@ M555 X165.328 Y30.3279 W29.3443 H29.3441
 M862.1 T{{FIRST_PRINTING_HEAD}} P0.4 A0 F0
 M862.1 T{{SECOND_PRINTING_HEAD}} P0.4 A0 F0
 ; turn off unused heaters
-{{offHeaters FIRST_PRINTING_HEAD SECOND_PRINTING_HEAD}}
+
 M217 Z2
-; set bed and extruder temp for MBL
-M140 S80
-G0 Z5
-M109 T{{FIRST_PRINTING_HEAD}} S175
-; Home XY
-G28 X Y
-; try picking tools used in print
-G1 F24000
-T{{SECOND_PRINTING_HEAD}} S1 L0 D0
-; select tool that will be used to home & MBL
-T{{FIRST_PRINTING_HEAD}} S1 L0 D0
-; home Z with MBL tool
-M84 E
-G28 Z
-G0 Z5
-M73 P1 R6
-M73 Q1 S6
-M104 T{{FIRST_PRINTING_HEAD}} S70
-M190 S80
-G29 G
-M109 T{{FIRST_PRINTING_HEAD}} S175
-; move to the nozzle cleanup area
-G1 X197.328 Y23.3279 Z5 F24000
-M302 S160
-G1 E-2 F2400
+
+
+
+
+
+
+
+
+
+
+
+
+
 ; nozzle cleanup
-M84 E
-G29 P9 X165.328 Y23.3279 W32 H7
-G0 Z5 F480
-M107
-; MBL
-M84 E
-G29 P1
-G29 P1 X30 Y0 W300 H20 C
-G29 P3.2
-G29 P3.13
-G29 A
-G1 Z10 F720
-G1 F24000
-P0 S1 L1 D0
+
+
+
+
+
 ; set extruder temp
 M104 T{{FIRST_PRINTING_HEAD}} S250
 M104 T{{SECOND_PRINTING_HEAD}} S250
-
+;Home Z axis
+G28 Z
 ;; MODELS_PLACEHOLDER
 
 ;TYPE:Custom
@@ -3237,17 +3217,22 @@ M104 T{{SECOND_PRINTING_HEAD}} S250
 ; Filament-specific end gcode
 ; Filament-specific end gcode
 ; Filament-specific end gcode
+
 G4
 G1 Z8
 P0 S1
-G1 Z100 F300
-; turn off extruder heaters
-M104 T{{FIRST_PRINTING_HEAD}} S0
-M104 T{{SECOND_PRINTING_HEAD}} S0
-M140 S0
-M107
+
+; set extruder temp
+M104 T0 S175
+M104 T1 S175
+M104 T2 S175
+M104 T3 S175
+M104 T4 S175
+
+M140 S60 ; set bed temp
+
 M221 S100
-M84
+
 M77
 ; max_layer_z = 3
 M73 P100 R0
