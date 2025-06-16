@@ -3177,6 +3177,7 @@ M862.6 P"Input shaper"
 M115 U6.2.2+8853
 G90
 M83
+
 ; set print area
 M555 X165.328 Y30.3279 W29.3443 H29.3441
 ; inform about nozzle diameter
@@ -3185,24 +3186,7 @@ M862.1 T{{SECOND_PRINTING_HEAD}} P0.4 A0 F0
 ; turn off unused heaters
 
 M217 Z2
-
-
-
-
-
-
-
-
-
-
-
-
-
 ; nozzle cleanup
-
-
-
-
 
 ; set extruder temp
 M104 T{{FIRST_PRINTING_HEAD}} S250

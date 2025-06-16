@@ -38,7 +38,14 @@ export function flattenConfigParameters(
   // 3) height
   const height = params['height'];
   if (height?.content.length) {
-    result.LAYERS = Number(height.content[0].value); //TODO: anpassen je nach Einheit (cm oder mm), ein Layer = 0.2mm
+    // height is specified in centimeters
+    const heightCm = Number(height.content[0].value);
+    // convert to millimeters and cap to a maximum of 7 mm
+    const heightMm = heightCm * 10;
+    const cappedMm = Math.min(heightMm, 7);
+    // each layer is 0.2 mm high
+    const layers = Math.round(cappedMm / 0.2);
+    result.LAYERS = layers;
   }
   
   // 4) top-surface

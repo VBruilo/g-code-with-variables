@@ -218,4 +218,46 @@ router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) =
   }
 );
 
+/**
+ * POST `/prints/calibration`
+ *
+ * Starts a calibration print using the predefined calibration file.
+ *
+ * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 500 - `{ error: string }` on failure.
+ */
+router.post('/prints/calibration', async (req, res) => {
+  try {
+    await printerController.startCalibration();
+    return res.json({ message: 'Calibration started successfully!' });
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while starting calibration:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST `/prints/shutdown`
+ *
+ * Starts the shutdown procedure by printing the predefined G-code file.
+ *
+ * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 500 - `{ error: string }` on failure.
+ */
+router.post('/prints/shutdown', async (req, res) => {
+  try {
+    await printerController.startShutdown();
+    return res.json({ message: 'Shutdown started successfully!' });
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while starting shutdown:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
