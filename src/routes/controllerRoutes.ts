@@ -78,27 +78,15 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
  *
  * Returns the status of a running print job.
  *
- * @param req.params.coinJobId - ID of the coin job whose status is requested.
- *
  * @returns 200 - `JobStatus` object describing the current progress.
  * @returns 400 - `{ error: string }` when the `coinJobId` parameter is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
-    // 1) Pfad-Parameter auslesen
-    const { coinJobId } = req.params;
-
-     if (!coinJobId) {
-      return res
-        .status(400)
-        .json({ error: 'Missing required path parameter: coinJobId' });
-    }
-
+router.get('/prints/parameterized/coin/status', async (req, res) => {
     try {
-      // 2) Controller-Methode aufrufen
-      const status = await printerController.getPrintStatus(coinJobId);
 
-      // 3) Status-Objekt direkt zurückgeben
+      const status = await printerController.getPrintStatus();
+
       return res.json(status);
     } catch (err: any) {
       console.error(
@@ -116,23 +104,13 @@ router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
  *
  * Pauses the running print job.
  *
- * @param req.params.coinJobId - ID of the job to pause.
- *
  * @returns 204 - When the job was paused successfully.
  * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
-    const { coinJobId } = req.params;
-
-    if (!coinJobId) {
-      return res
-        .status(400)
-        .json({ error: 'Missing required path parameter: coinJobId' });
-    }
-
+router.put('/prints/parameterized/coin/pause', async (req, res) => {
     try {
-      await printerController.pausePrint(coinJobId);
+      await printerController.pausePrint();
       // Spec: 204 No Content
       return res.sendStatus(204);
     } catch (err: any) {
@@ -152,26 +130,15 @@ router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
  *
  * Resumes a paused print job.
  *
- * @param req.params.coinJobId - ID of the job to resume.
- *
  * @returns 204 - When the job was resumed successfully.
  * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
-    const { coinJobId } = req.params;
-    
-    if (!coinJobId) {
-          return res
-            .status(400)
-            .json({ error: 'Missing required path parameter: coinJobId' });
-        }  
+router.put('/prints/parameterized/coin/resume', async (req, res) => {
     try {
-          await printerController.resumePrint(coinJobId);
-          return res
-            .sendStatus(204);
+          await printerController.resumePrint();
+          return res.sendStatus(204);
         } catch (err: any) {
-
       console.error(
         '[ControllerRoutes] Error while resuming print:', 
         err.message
@@ -188,23 +155,13 @@ router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
  *
  * Cancels a running print job.
  *
- * @param req.params.coinJobId - ID of the job to cancel.
- *
  * @returns 204 - When the job was cancelled successfully.
  * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) => {
-  const { coinJobId } = req.params;
-
-  if (!coinJobId) {
-    return res
-      .status(400)
-      .json({ error: 'Missing required path parameter: coinJobId' });
-  }
-
+router.delete('/prints/parameterized/coin/cancel', async (req, res) => {
   try {
-    await printerController.cancelPrint(coinJobId);
+    await printerController.cancelPrint();
     return res.sendStatus(204)
   } catch (err: any) {
     console.error(
