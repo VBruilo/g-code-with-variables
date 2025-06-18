@@ -66,13 +66,13 @@ export function flattenConfigParameters(
   }
 
   // 5) bottom-surface: QR Code
-  const bottom = params['bottom-surface'];
+  /*const bottom = params['bottom-surface'];
   if (bottom) {
     const qr = bottom.parameters['qr-code']; 
     if (qr?.content.length) {
       result.QR_CODE = Number(qr.content[0].value);
     }
-  }
+  }*/
 
   // 6) coordinates: X + Y
   const coords = params['coordinates'];
