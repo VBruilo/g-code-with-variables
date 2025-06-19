@@ -17,9 +17,9 @@ const router = Router();
  * @param req.body.machineConfigID - Identifier of the machine configuration.
  * @param req.body.configSetID - Identifier of the configuration set.
  *
- * @returns 200 - `{ message: string }` when the job is started.
- * @returns 500 - `{ error: string }` on failure.
- */
+ * @returns 201 - `{ jobId: string }` when the job is started.
+* @returns 500 - `{ error: string }` on failure.
+*/
 router.post('/prints/parameterized/coin', async (req, res) => {
   try {
     const { machineConfigID, configSetID } = req.body;
@@ -29,9 +29,9 @@ router.post('/prints/parameterized/coin', async (req, res) => {
         .json({ error: 'machineConfigID and configSetID are required' });
     }
 
-    await printerController.startPrint(machineConfigID, configSetID);
+    const jobId = await printerController.startPrint(machineConfigID, configSetID);
 
-    return res.json({ message: 'Printing started successfully!' });
+    return res.status(201).location(jobId).json({ jobId });
   } catch (err: any) {
     console.error(
       '[ControllerRoutes] Error while starting print:', 
@@ -78,41 +78,42 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
 
 
 /**
- * GET `/prints/parameterized/coin/status`
+ * GET `/prints/parameterized/coin/:coinJobId/status`
  *
  * Returns the status of a running print job.
  *
  * @returns 200 - `JobStatus` object describing the current progress.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.get('/prints/parameterized/coin/status', async (req, res) => {
-    try {
+router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
+  try {
+    const { coinJobId } = req.params;
 
-      const status = await printerController.getPrintStatus();
+    const status = await printerController.getPrintStatus(coinJobId);
 
-      return res.json(status);
-    } catch (err: any) {
-      console.error(
-        '[ControllerRoutes] Error while getting print status:',
-        err.message
-      );
-      return res.status(500).json({ error: err.message });
-    }
+    return res.json(status);
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while getting print status:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
   }
-);
+});
 
 
 /**
- * PUT `/prints/parameterized/coin/pause`
+ * PUT `/prints/parameterized/coin/:coinJobId/pause`
  *
  * Pauses the running print job.
  *
  * @returns 204 - When the job was paused successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/pause', async (req, res) => {
+router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
     try {
-      await printerController.pausePrint();
+      const { coinJobId } = req.params;
+      await printerController.pausePrint(coinJobId);
       // Spec: 204 No Content
       return res.sendStatus(204);
     } catch (err: any) {
@@ -128,16 +129,17 @@ router.put('/prints/parameterized/coin/pause', async (req, res) => {
 );
 
 /**
- * PUT `/prints/parameterized/coin/resume`
+ * PUT `/prints/parameterized/coin/:coinJobId/resume`
  *
  * Resumes a paused print job.
  *
  * @returns 204 - When the job was resumed successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/resume', async (req, res) => {
+router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
     try {
-          await printerController.resumePrint();
+          const { coinJobId } = req.params;
+          await printerController.resumePrint(coinJobId);
           return res.sendStatus(204);
         } catch (err: any) {
       console.error(
@@ -152,16 +154,17 @@ router.put('/prints/parameterized/coin/resume', async (req, res) => {
 );
 
 /**
- * DELETE `/prints/parameterized/coin/cancel`
+ * DELETE `/prints/parameterized/coin/:coinJobId/cancel`
  *
  * Cancels a running print job.
  *
  * @returns 204 - When the job was cancelled successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.delete('/prints/parameterized/coin/cancel', async (req, res) => {
+router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) => {
   try {
-    await printerController.cancelPrint();
+    const { coinJobId } = req.params;
+    await printerController.cancelPrint(coinJobId);
     return res.sendStatus(204)
   } catch (err: any) {
     console.error(
