@@ -76,8 +76,7 @@ class PrinterController {
     console.log('[PrinterController] fetchTransformedGCode() start...');
 
     // 1) Parameter vom Config-Server holen
-    const url =
-      `${this.configServerUrl}/api/spaces/proceed-default-no-iam-user/configurations/${configSetID}/latest/machine/${machineConfigID}`;
+    const url = `${this.configServerUrl}/api/spaces/proceed-default-no-iam-user/configurations/${configSetID}/latest/machine/${machineConfigID}`;
 
     const configResponse = await axios.get<ConfigServerResponse>(url);
     const rawParams = configResponse.data.parameters;

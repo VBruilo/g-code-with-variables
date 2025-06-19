@@ -3,9 +3,9 @@ import axios from 'axios';
 
 async function callPrint() {
   try {
-    const res = await axios.post('http://localhost:3011/api/prints/parameterized/coin', {
-      machineConfigID: 'example-machine',
-      configSetID: 'example-config'
+    const res = await axios.post('http://localhost:3000/api/prints/parameterized/coin', {
+      machineConfigID: 'example',
+      configSetID: 'example'
     });
     console.log(res.data);
   } catch (err) {

@@ -5,38 +5,38 @@
 
   "parameters": {
     "coin-color": {
-      "content": [{ "value": "<white|red|blue|black|green>" }],
+      "content": [{ "value": "white" }],
       "parameters": {
         "coin-printing-head-no": {
-          "content": [{ "value": "<1-5>" }]
+          "content": [{ "value": "1" }]
         },
         "coin-material": {
-          "content": [{ "value": "<PLA|PETG>" }]
+          "content": [{ "value": "PETG" }]
         }
       }
     },
     "width": {
-      "content": [{ "value": "<20,00|23,25|25,75|30,00>" }],
+      "content": [{ "value": "30.00" }],
       "parameters": {}
     },
     "height": {
-      "content": [{ "value": "<5-100>" }],
+      "content": [{ "value": "0" }],
       "parameters": {}
     },
     "top-surface": {
       "content": [],
       "parameters": {
         "logo": {
-          "content": [{ "value": "<None|SNET|TUB|PROCEED>" }]
+          "content": [{ "value": "SNET" }]
         },
         "logo-color": {
-          "content": [{ "value": "<white|red|blue|black|green>" }],
+          "content": [{ "value": "white" }],
           "parameters": {
             "coin-printing-head-no": {
-              "content": [{ "value": "<1-5>" }]
+              "content": [{ "value": "2" }]
             },
             "coin-material": {
-              "content": [{ "value": "<PLA|PETG>" }]
+              "content": [{ "value": "PETG" }]
             }
           }
         }
@@ -46,10 +46,10 @@
       "content": [],
       "parameters": {
         "x": {
-          "content": [{ "value": "<0-360>" }]
+          "content": [{ "value": "0" }] 
         },
         "y": {
-          "content": [{ "value": "<0-360>" }]
+          "content": [{ "value": "0" }]
         }
       }
     }

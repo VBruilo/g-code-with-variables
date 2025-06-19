@@ -117,12 +117,12 @@ export function insertModelBlocks(
     for (const { model, offsetX, offsetY } of placements) {
     // G92 und G1 Logik ist gerade nicht relevant, da es nur ein Modell geben wird
 
-      assembled += `G1 X${offsetX} Y${offsetY}\n`;
-      assembled += `G92 X0 Y0\n`;
+      //assembled += `G1 X${offsetX} Y${offsetY}\n`;
+      //assembled += `G92 X0 Y0\n`;
       assembled += model.content + '\n';
       assembled += logoSnippet + '\n';
-      assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
-      assembled += `G92 X0 Y0\n`;
+      //assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
+      //assembled += `G92 X0 Y0\n`;
     }
     return template.replace(placeholderRegex, assembled.trim());
 }

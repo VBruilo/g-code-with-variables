@@ -1,20 +1,8 @@
 {
-  "PLA": [
-    {
-      "size": 1,
-      "path": "./gcode/PLA/1cm.gcode",
-      "boundingBox": { "width": 10, "depth": 10 }
-    },
-    {
-      "size": 2,
-      "path": "./gcode/PLA/2cm.gcode",
-      "boundingBox": { "width": 20, "depth": 20 }
-    }
-  ],
   "PETG": [
     {
-      "size": 20,
-      "path": "./gcode/PETG/20mm.gcode",
+      "size": 20.00,
+      "path": "./gcode/PETG/20.00mm.gcode",
       "boundingBox": { "width": 10, "depth": 10 }
     },
     {
@@ -28,21 +16,9 @@
       "boundingBox": { "width": 10, "depth": 20 }
     },
     {
-      "size": 30,
-      "path": "./gcode/PETG/30mm.gcode",
+      "size": 30.00,
+      "path": "./gcode/PETG/30.00mm.gcode",
       "boundingBox": { "width": 10, "depth": 20 }
-    }
-  ],
-  "test": [
-    {
-      "size": 20,
-      "path": "./gcode/test/20mm.gcode",
-      "boundingBox": { "width": 10, "depth": 10 }
-    },
-    {
-      "size": 2,
-      "path": "./gcode/test/2cm.gcode",
-      "boundingBox": { "width": 20, "depth": 20 }
     }
   ]
 }
