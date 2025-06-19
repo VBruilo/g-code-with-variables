@@ -41,12 +41,15 @@ class PrinterController {
    * Creates the final G-code from the parameterized template and sends it to
    * the printer to start the job.
    *
+   * @param machineConfigID - Identifier of the machine configuration.
+   * @param configSetID - Identifier of the configuration set.
+   *
    * @throws {@link Error} When either fetching the transformed G-code or the
    * upload to the printer fails.
    */
-  public async startPrint(): Promise<void> {
+  public async startPrint(machineConfigID: string, configSetID: string): Promise<void> {
     // 1) Finales G-Code erzeugen
-    const finalGCode = await this.fetchTransformedGCode();
+    const finalGCode = await this.fetchTransformedGCode(machineConfigID, configSetID);
 
     // 2) G-Code an den Drucker (über PrusaLink API) senden und Druck starten
     await this.sendToPrinter(finalGCode);
@@ -59,15 +62,21 @@ class PrinterController {
    * Reads the parameterized G-code template, applies parameters from the
    * config server and stores the resulting file.
    *
+   * @param machineConfigID - Identifier of the machine configuration.
+   * @param configSetID - Identifier of the configuration set.
    * @returns The fully transformed G-code ready for printing.
    * @throws {@link Error} When reading the template, contacting the config
    * server or writing the output fails.
    */
-  private async fetchTransformedGCode(): Promise<string> {
+  private async fetchTransformedGCode(machineConfigID: string, configSetID: string): Promise<string> {
     console.log('[PrinterController] fetchTransformedGCode() start...');
 
     // 1) Parameter vom Config-Server holen
-    const configResponse = await axios.get<ConfigServerResponse>(`${this.configServerUrl}/api/parameters`);
+    const url =
+      `${this.configServerUrl}/api/spaces/proceed-default-no-iam-user` +
+      `/configurations/${configSetID}/latest/machine/${machineConfigID}`;
+
+    const configResponse = await axios.get<ConfigServerResponse>(url);
     const rawParams = configResponse.data.parameters;
 
     // 2) Passende G-Code-Datei basierend auf FILAMENT_TYPE auswählen

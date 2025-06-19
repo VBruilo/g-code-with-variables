@@ -22,10 +22,14 @@ const router = Router();
  */
 router.post('/prints/parameterized/coin', async (req, res) => {
   try {
-    
     const { machineConfigID, configSetID } = req.body;
+    if (!machineConfigID || !configSetID) {
+      return res
+        .status(400)
+        .json({ error: 'machineConfigID and configSetID are required' });
+    }
 
-    await printerController.startPrint();
+    await printerController.startPrint(machineConfigID, configSetID);
 
     return res.json({ message: 'Printing started successfully!' });
   } catch (err: any) {
