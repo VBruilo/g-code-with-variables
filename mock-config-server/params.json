@@ -1,63 +1,57 @@
 {
-"metadata":{
-    "name": "coin",
-    "description": "coin",
-    "version": 1.0,
-    "author": "SNET",
-    "license": "MIT"
-},
-"parameters":{
-"coin-color": {
-    "content": [ ],
-    "parameters": {
-        "coin-printing-head-no":{
-            "content": [ { "value": 0} ]
+  "id": "0ec0ac4f-ebb9-437c-9587-7f3dec544aee",
+  "name": "lab-coin-process",
+  "metadata": {},
+
+  "parameters": {
+    "coin-color": {
+      "content": [{ "value": "<white|red|blue|black|green>" }],
+      "parameters": {
+        "coin-printing-head-no": {
+          "content": [{ "value": "<1-5>" }]
         },
-        "coin-material":{
-            "content": [ { "value":"PETG"} ]
+        "coin-material": {
+          "content": [{ "value": "<PLA|PETG>" }]
         }
-    }
-  },
-"width": {
-    "content": [ { "value": 30 }],
-    "parameters": {}
-},
-"height": {
-    "content": [ { "value": 0.2 } ],
-    "parameters": {}
-},
-"top-surface": {
-    "content": [ ],
-    "parameters": {
-        "logo":{
-            "content": [ { "value": "TUB" } ]
+      }
+    },
+    "width": {
+      "content": [{ "value": "<20,00|23,25|25,75|30,00>" }],
+      "parameters": {}
+    },
+    "height": {
+      "content": [{ "value": "<5-100>" }],
+      "parameters": {}
+    },
+    "top-surface": {
+      "content": [],
+      "parameters": {
+        "logo": {
+          "content": [{ "value": "<None|SNET|TUB|PROCEED>" }]
         },
-        "logo-printing-head-no":{
-            "content": [ { "value": 3}]
+        "logo-color": {
+          "content": [{ "value": "<white|red|blue|black|green>" }],
+          "parameters": {
+            "coin-printing-head-no": {
+              "content": [{ "value": "<1-5>" }]
+            },
+            "coin-material": {
+              "content": [{ "value": "<PLA|PETG>" }]
+            }
+          }
+        }
+      }
+    },
+    "coordinates": {
+      "content": [],
+      "parameters": {
+        "x": {
+          "content": [{ "value": "<0-360>" }]
         },
-        "logo-material":{
-            "content": [ { "value": "PETG"} ]
+        "y": {
+          "content": [{ "value": "<0-360>" }]
         }
-    }
-  },
-"bottom-surface": {
-    "content": [ ],
-    "parameters": {
-        "qr-code":{
-            "content": [ { "value": 1 } ]
-        }
-    }
-  },
-  "coordinates": {
-    "content": [ ],
-    "parameters": {
-        "x":{
-            "content": [ { "value": 0 } ]
-        },
-        "y":{
-            "content": [ { "value": 0 }]
-        }
+      }
     }
   }
- }
 }

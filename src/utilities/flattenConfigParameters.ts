@@ -55,7 +55,8 @@ export function flattenConfigParameters(
     if (logo?.content.length) {
       result.LOGO = String(logo.content[0].value);
     }
-    const second_head = top.parameters['logo-printing-head-no'];
+    const logo_color = top.parameters['logo-color'];
+    const second_head = logo_color.parameters['coin-printing-head-no'];
     if (second_head?.content.length) {
       result.SECOND_PRINTING_HEAD = Number(second_head.content[0].value);
     }
