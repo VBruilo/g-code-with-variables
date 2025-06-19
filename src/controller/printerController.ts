@@ -134,7 +134,7 @@ class PrinterController {
       process.cwd(),
       'gcode',
       'printer_control',
-      'calibration.gcode'
+      'start-up.gcode'
     );
 
     const gcode = await fs.readFile(calibrationPath, 'utf-8');
@@ -156,7 +156,7 @@ class PrinterController {
       process.cwd(),
       'gcode',
       'printer_control',
-      'turn_off.gcode'
+      'shutting-down.gcode'
     );
 
     const gcode = await fs.readFile(shutdownPath, 'utf-8');
