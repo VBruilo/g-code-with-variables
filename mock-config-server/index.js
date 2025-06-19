@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = 3001;
 
-app.get('/api/parameters', (req, res) => {
+app.get('/api/spaces/proceed-default-no-iam-user/configurations/example/latest/machine/example', (req, res) => {
   const filePath = path.join(__dirname, 'params.json');
 
   fs.readFile(filePath, 'utf8', (err, data) => {

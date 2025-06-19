@@ -19,11 +19,11 @@ class PrinterController {
 
   constructor() {
     // Config-Server
-    this.configServerUrl = 'http://localhost:3001';
+    this.configServerUrl = 'http://localhost:3011';
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
-    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
-    //this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
+    //this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
     this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
@@ -77,8 +77,7 @@ class PrinterController {
 
     // 1) Parameter vom Config-Server holen
     const url =
-      `${this.configServerUrl}/api/spaces/proceed-default-no-iam-user` +
-      `/configurations/${configSetID}/latest/machine/${machineConfigID}`;
+      `${this.configServerUrl}/api/spaces/proceed-default-no-iam-user/configurations/${configSetID}/latest/machine/${machineConfigID}`;
 
     const configResponse = await axios.get<ConfigServerResponse>(url);
     const rawParams = configResponse.data.parameters;
@@ -226,7 +225,7 @@ class PrinterController {
 
     // Ziel-Endpoint: Hier laden wir die Datei unter dem Storage "local" hoch,
     // und benennen sie beispielsweise "final.gcode".
-    const endpointUrl = `${this.prusaLinkUrl}/api/v1/files/local/final.gcode`;
+    const endpointUrl = `${this.prusaLinkUrl}/api/v1/files/usb/Vlad_Tests/final.gcode`;
 
     // Die PrusaLink API erwartet einen PUT-Request mit den folgenden Headers:
     // - Content-Length: Größe der Datei
