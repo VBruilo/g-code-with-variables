@@ -166,6 +166,20 @@ class PrinterController {
     this.currentJobId = (await this.getCurrentJobId()) || undefined;
   }
 
+  /**
+   * Updates the printer status by starting the warm up or initiating the
+   * shutdown procedure depending on the provided status string.
+   */
+  public async updatePrinterStatus(status: 'start-up' | 'shutting-down'): Promise<void> {
+    if (status === 'start-up') {
+      await this.startCalibration();
+    } else if (status === 'shutting-down') {
+      await this.startShutdown();
+    } else {
+      throw new Error(`Invalid status: ${status}`);
+    }
+  }
+
 
   /**
    * Uploads the final G-code to the printer via the PrusaLink API and starts
