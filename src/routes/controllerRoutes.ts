@@ -179,41 +179,30 @@ router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) =
 );
 
 /**
- * POST `/prints/calibration`
+ * PUT `/printer/status`
  *
- * Starts a calibration print using the predefined calibration file.
+ * Starts the warm up or initiates the shutdown procedure depending on the
+ * provided printer status.
  *
- * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 202 - Accepted when the operation was triggered successfully.
+ * @returns 400 - `{ error: string }` on validation errors.
  * @returns 500 - `{ error: string }` on failure.
  */
-router.post('/prints/calibration', async (req, res) => {
+router.put('/printer/status', async (req, res) => {
   try {
-    await printerController.startCalibration();
-    return res.json({ message: 'Calibration started successfully!' });
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while starting calibration:',
-      err.message
-    );
-    return res.status(500).json({ error: err.message });
-  }
-});
+    const { status } = req.body;
+    if (status !== 'start-up' && status !== 'shutting-down') {
+      return res.status(400).json({
+        error: "Status must be either 'start-up' or 'shutting-down'",
+      });
+    }
 
-/**
- * POST `/prints/shutdown`
- *
- * Starts the shutdown procedure by printing the predefined G-code file.
- *
- * @returns 200 - `{ message: string }` when the job is started.
- * @returns 500 - `{ error: string }` on failure.
- */
-router.post('/prints/shutdown', async (req, res) => {
-  try {
-    await printerController.startShutdown();
-    return res.json({ message: 'Shutdown started successfully!' });
+    await printerController.updatePrinterStatus(status);
+
+    return res.sendStatus(202);
   } catch (err: any) {
     console.error(
-      '[ControllerRoutes] Error while starting shutdown:',
+      '[ControllerRoutes] Error while updating printer status:',
       err.message
     );
     return res.status(500).json({ error: err.message });
