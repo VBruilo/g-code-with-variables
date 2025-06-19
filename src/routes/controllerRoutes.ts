@@ -209,4 +209,25 @@ router.put('/printer/status', async (req, res) => {
   }
 });
 
+/**
+ * GET `/printer/status`
+ *
+ * Returns the current printer status fetched from PrusaLink.
+ *
+ * @returns 200 - `{ status: string }` with the mapped status.
+ * @returns 500 - `{ error: string }` on failure.
+ */
+router.get('/printer/status', async (req, res) => {
+  try {
+    const status = await printerController.getPrinterStatus();
+    return res.json({ status });
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while getting printer status:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
