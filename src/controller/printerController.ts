@@ -15,6 +15,7 @@ class PrinterController {
   private transformer: GCodeTransformer;
   private prusaLinkUrl: string;
   private prusaLinkKey: string;
+  private currentJobId?: string;
 
   constructor() {
     // Config-Server
@@ -48,6 +49,9 @@ class PrinterController {
 
     // 2) G-Code an den Drucker (über PrusaLink API) senden und Druck starten
     await this.sendToPrinter(finalGCode);
+
+    // 3) After initiating the print, store the current job ID
+    this.currentJobId = await this.getCurrentJobId() || undefined;
   }
 
   /**
@@ -174,14 +178,19 @@ class PrinterController {
   /**
    * Retrieves the print status for the given job from PrusaLink.
    *
-   * @param coinJobId - The identifier used by the coin application.
+   * @param coinJobId - (optional) The identifier used by the coin application.
    * @returns The current job status. If the request fails an error status is
    * returned.
    * @throws No errors are thrown; failures result in an `'ERROR'` state.
    */
-  public async getPrintStatus(coinJobId: string): Promise<JobStatus> {
+  public async getPrintStatus(coinJobId?: string): Promise<JobStatus> {
+    const jobId = coinJobId ?? this.currentJobId;
+    if (!jobId) {
+        throw new Error('No job ID specified and no current job stored');
+    }
+
     try {
-        console.log(`[PrinterController] getPrintStatus() for job ID: ${coinJobId}`);
+        console.log(`[PrinterController] getPrintStatus() for job ID: ${jobId}`);
 
         const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/job`, {
         headers: this.getAuthHeaders()
@@ -190,8 +199,9 @@ class PrinterController {
        
         // 204: kein aktiver Job
         if (resp.status === 204) {
+            this.currentJobId = undefined;
             return {
-                id: parseInt(coinJobId, 10),
+                id: parseInt(jobId, 10),
                 state: 'FINISHED',
                 progress: 100,
                 timePrinting: 0,
@@ -209,6 +219,10 @@ class PrinterController {
         inaccurate_estimates?: boolean;
         };
 
+        if (job.state === 'FINISHED' || job.state === 'STOPPED') {
+            this.currentJobId = undefined;
+        }
+
         return {
         id:               job.id,
         state:            job.state,
@@ -221,7 +235,7 @@ class PrinterController {
         console.error('[PrinterController] getPrintStatus error:', err.message);
         // Bei API-Fehler einen Error-Status zurückgeben
         return {
-        id:               parseInt(coinJobId, 10),
+        id:               parseInt(jobId, 10),
         state:            'ERROR',
         progress:         0,
         timePrinting:     0,
@@ -233,13 +247,18 @@ class PrinterController {
   /**
    * Sends a pause command for the specified print job.
    *
-   * @param coinJobId - Identifier of the job to pause.
+   * @param coinJobId - (optional) Identifier of the job to pause.
    * @throws {@link Error} If the HTTP request fails.
    */
-  public async pausePrint(coinJobId: string): Promise<void> {
-    console.log(`[PrinterController] pausePrint() for job ID: ${coinJobId}`);
+  public async pausePrint(coinJobId?: string): Promise<void> {
+    const jobId = coinJobId ?? this.currentJobId;
+    if (!jobId) {
+      throw new Error('No job ID specified and no current job stored');
+    }
+
+    console.log(`[PrinterController] pausePrint() for job ID: ${jobId}`);
     await axios.put(
-      `${this.prusaLinkUrl}/api/v1/job/${coinJobId}/pause`,
+      `${this.prusaLinkUrl}/api/v1/job/${jobId}/pause`,
       null,
       { headers: this.getAuthHeaders() }
     );
@@ -248,13 +267,18 @@ class PrinterController {
   /**
    * Resumes a previously paused print job.
    *
-   * @param coinJobId - Identifier of the job to resume.
+   * @param coinJobId - (optional) Identifier of the job to resume.
    * @throws {@link Error} If the HTTP request fails.
    */
-  public async resumePrint(coinJobId: string): Promise<void> {
-    console.log(`[PrinterController] resumePrint() for job ID: ${coinJobId}`);
+  public async resumePrint(coinJobId?: string): Promise<void> {
+    const jobId = coinJobId ?? this.currentJobId;
+    if (!jobId) {
+      throw new Error('No job ID specified and no current job stored');
+    }
+
+    console.log(`[PrinterController] resumePrint() for job ID: ${jobId}`);
     await axios.put(
-      `${this.prusaLinkUrl}/api/v1/job/${coinJobId}/resume`,
+      `${this.prusaLinkUrl}/api/v1/job/${jobId}/resume`,
       null,
       { headers: this.getAuthHeaders() }
     );
@@ -263,15 +287,23 @@ class PrinterController {
   /**
    * Cancels an active print job on the printer.
    *
-   * @param coinJobId - Identifier of the job to cancel.
+   * @param coinJobId - (optional) Identifier of the job to cancel.
    * @throws {@link Error} If the HTTP request fails.
    */
-   public async cancelPrint(coinJobId: string): Promise<void> {
-    console.log(`[PrinterController] cancelPrint() for job ID: ${coinJobId}`);
-    await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${coinJobId}`, {
+   public async cancelPrint(coinJobId?: string): Promise<void> {
+    const jobId = coinJobId ?? this.currentJobId;
+    if (!jobId) {
+      throw new Error('No job ID specified and no current job stored');
+    }
+
+    console.log(`[PrinterController] cancelPrint() for job ID: ${jobId}`);
+    await axios.delete(`${this.prusaLinkUrl}/api/v1/job/${jobId}`, {
       headers: this.getAuthHeaders()
     });
-  }
+
+    // after canceling clear stored job ID
+    this.currentJobId = undefined;
+   }
 }
 
 export const printerController = new PrinterController(); 
