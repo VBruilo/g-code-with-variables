@@ -83,9 +83,9 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
  */
 router.get('/prints/parameterized/coin/status', async (req, res) => {
     try {
+
       const status = await printerController.getPrintStatus();
 
-      // 3) Status-Objekt direkt zurückgeben
       return res.json(status);
     } catch (err: any) {
       console.error(
@@ -134,10 +134,8 @@ router.put('/prints/parameterized/coin/pause', async (req, res) => {
 router.put('/prints/parameterized/coin/resume', async (req, res) => {
     try {
           await printerController.resumePrint();
-          return res
-            .sendStatus(204);
+          return res.sendStatus(204);
         } catch (err: any) {
-
       console.error(
         '[ControllerRoutes] Error while resuming print:', 
         err.message
@@ -160,7 +158,7 @@ router.put('/prints/parameterized/coin/resume', async (req, res) => {
 router.delete('/prints/parameterized/coin/cancel', async (req, res) => {
   try {
     await printerController.cancelPrint();
-    return res.sendStatus(204);
+    return res.sendStatus(204)
   } catch (err: any) {
     console.error(
       '[ControllerRoutes] Error while cancelling print:',
@@ -169,6 +167,49 @@ router.delete('/prints/parameterized/coin/cancel', async (req, res) => {
     return res
       .status(500)
       .json({ error: err.message });
+    }
+  }
+);
+
+/**
+ * POST `/prints/calibration`
+ *
+ * Starts a calibration print using the predefined calibration file.
+ *
+ * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 500 - `{ error: string }` on failure.
+ */
+router.post('/prints/calibration', async (req, res) => {
+  try {
+    await printerController.startCalibration();
+    return res.json({ message: 'Calibration started successfully!' });
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while starting calibration:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST `/prints/shutdown`
+ *
+ * Starts the shutdown procedure by printing the predefined G-code file.
+ *
+ * @returns 200 - `{ message: string }` when the job is started.
+ * @returns 500 - `{ error: string }` on failure.
+ */
+router.post('/prints/shutdown', async (req, res) => {
+  try {
+    await printerController.startShutdown();
+    return res.json({ message: 'Shutdown started successfully!' });
+  } catch (err: any) {
+    console.error(
+      '[ControllerRoutes] Error while starting shutdown:',
+      err.message
+    );
+    return res.status(500).json({ error: err.message });
   }
 });
 

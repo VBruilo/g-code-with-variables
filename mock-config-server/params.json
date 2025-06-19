@@ -11,7 +11,7 @@
     "content": [ ],
     "parameters": {
         "coin-printing-head-no":{
-            "content": [ { "value": 1} ]
+            "content": [ { "value": 0} ]
         },
         "coin-material":{
             "content": [ { "value":"PETG"} ]
@@ -23,7 +23,7 @@
     "parameters": {}
 },
 "height": {
-    "content": [ { "value": 5 } ],
+    "content": [ { "value": 0.2 } ],
     "parameters": {}
 },
 "top-surface": {
@@ -33,7 +33,7 @@
             "content": [ { "value": "TUB" } ]
         },
         "logo-printing-head-no":{
-            "content": [ { "value": 2}]
+            "content": [ { "value": 3}]
         },
         "logo-material":{
             "content": [ { "value": "PETG"} ]

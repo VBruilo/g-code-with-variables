@@ -22,7 +22,8 @@ class PrinterController {
     this.configServerUrl = 'http://localhost:3001';
 
     // PrusaLink Configurations – anpassen via ENV oder direkt
-    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
+    this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://localhost:3002';
+    //this.prusaLinkUrl = process.env.PRUSALINK_URL || 'http://192.168.12.20';
     this.prusaLinkKey = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN';
 
     // Transformer
@@ -74,15 +75,14 @@ class PrinterController {
     
     let gcodeTemplateFile;
     if (filamentType === 'PLA') {
-      gcodeTemplateFile = 'one_color_PLA.gcode';
+      gcodeTemplateFile = 'PLA_start_G-code.gcode';
     } else if (filamentType === 'PETG') {
-      gcodeTemplateFile = 'one_color_PETG.gcode';
+      gcodeTemplateFile = 'PETG_start_G-code.gcode';
     } else {
-      gcodeTemplateFile = 'test.gcode';
       // Wenn keiner der beiden Werte passt, Fehler werfen
-      //throw new Error(
-        //`[PrinterController] Unsupported FILAMENT_TYPE: ${params.FILAMENT_TYPE}`
-      //);
+      throw new Error(
+        `[PrinterController] Unsupported FILAMENT_TYPE: ${filamentType}. `
+      );
     }
 
     // 3) Original-G-Code-Datei lesen
@@ -108,6 +108,51 @@ class PrinterController {
     console.log('[PrinterController] fetchTransformedGCode() done.');
     return finalGCode;
   }
+
+    /**
+   * Starts a calibration print using the predefined calibration G-code.
+   *
+   * The method reads the `calibration.gcode` file from the `gcode/printer_control`
+   * folder and uploads it to the printer via {@link sendToPrinter}. After
+   * uploading, {@link currentJobId} is updated with the ID of the started job.
+   */
+  public async startCalibration(): Promise<void> {
+    const calibrationPath = path.join(
+      process.cwd(),
+      'gcode',
+      'printer_control',
+      'calibration.gcode'
+    );
+
+    const gcode = await fs.readFile(calibrationPath, 'utf-8');
+
+    await this.sendToPrinter(gcode);
+
+    this.currentJobId = (await this.getCurrentJobId()) || undefined;
+  }
+
+  /**
+   * Sends a shutdown G-code to turn off the printer.
+   *
+   * The method reads the `turn_off.gcode` file from the `gcode/printer_control`
+   * folder and uploads it to the printer via {@link sendToPrinter}. After
+   * uploading, {@link currentJobId} is updated with the ID of the started job.
+   */
+  public async startShutdown(): Promise<void> {
+    const shutdownPath = path.join(
+      process.cwd(),
+      'gcode',
+      'printer_control',
+      'turn_off.gcode'
+    );
+
+    const gcode = await fs.readFile(shutdownPath, 'utf-8');
+
+    await this.sendToPrinter(gcode);
+
+    this.currentJobId = (await this.getCurrentJobId()) || undefined;
+  }
+
 
   /**
    * Uploads the final G-code to the printer via the PrusaLink API and starts
