@@ -47,7 +47,7 @@ class PrinterController {
    * @throws {@link Error} When either fetching the transformed G-code or the
    * upload to the printer fails.
    */
-  public async startPrint(machineConfigID: string, configSetID: string): Promise<void> {
+  public async startPrint(machineConfigID: string, configSetID: string): Promise<string> {
     // 1) Finales G-Code erzeugen
     const finalGCode = await this.fetchTransformedGCode(machineConfigID, configSetID);
 
@@ -56,6 +56,10 @@ class PrinterController {
 
     // 3) After initiating the print, store the current job ID
     this.currentJobId = await this.getCurrentJobId() || undefined;
+    if (!this.currentJobId) {
+      throw new Error('Unable to determine job ID after starting print');
+    }
+    return this.currentJobId;
   }
 
   /**
