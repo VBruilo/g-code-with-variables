@@ -74,12 +74,11 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
 
 
 /**
- * GET `/prints/parameterized/coin/:coinJobId/status`
+ * GET `/prints/parameterized/coin/status`
  *
  * Returns the status of a running print job.
  *
  * @returns 200 - `JobStatus` object describing the current progress.
- * @returns 400 - `{ error: string }` when the `coinJobId` parameter is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
 router.get('/prints/parameterized/coin/status', async (req, res) => {
@@ -100,12 +99,11 @@ router.get('/prints/parameterized/coin/status', async (req, res) => {
 
 
 /**
- * PUT `/prints/parameterized/coin/:coinJobId/pause`
+ * PUT `/prints/parameterized/coin/pause`
  *
  * Pauses the running print job.
  *
  * @returns 204 - When the job was paused successfully.
- * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
 router.put('/prints/parameterized/coin/pause', async (req, res) => {
@@ -126,12 +124,11 @@ router.put('/prints/parameterized/coin/pause', async (req, res) => {
 );
 
 /**
- * PUT `/prints/parameterized/coin/:coinJobId/resume`
+ * PUT `/prints/parameterized/coin/resume`
  *
  * Resumes a paused print job.
  *
  * @returns 204 - When the job was resumed successfully.
- * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
 router.put('/prints/parameterized/coin/resume', async (req, res) => {
@@ -151,12 +148,11 @@ router.put('/prints/parameterized/coin/resume', async (req, res) => {
 );
 
 /**
- * DELETE `/prints/parameterized/coin/:coinJobId/cancel`
+ * DELETE `/prints/parameterized/coin/cancel`
  *
  * Cancels a running print job.
  *
  * @returns 204 - When the job was cancelled successfully.
- * @returns 400 - `{ error: string }` when `coinJobId` is missing.
  * @returns 500 - `{ error: string }` on internal errors.
  */
 router.delete('/prints/parameterized/coin/cancel', async (req, res) => {
