@@ -180,6 +180,35 @@ class PrinterController {
     }
   }
 
+  /**
+   * Retrieves the current printer status from PrusaLink.
+   *
+   * @returns The mapped printer status string or 'printer-not-reachable' when
+   *          the request fails.
+   */
+  public async getPrinterStatus(): Promise<string> {
+    try {
+      const resp = await axios.get(`${this.prusaLinkUrl}/api/v1/status`, {
+        headers: this.getAuthHeaders(),
+      });
+
+      const data: any = resp.data;
+      const state: string | undefined = data?.printer?.state;
+      const mapping: Record<string, string> = {
+        IDLE: 'ready-for-print',
+        PRINTING: 'printing',
+        PAUSED: 'paused',
+        FINISHED: 'finished',
+        ERROR: 'error',
+      };
+
+      return mapping[state ?? ''] ?? state?.toLowerCase() ?? 'unknown';
+    } catch (err: any) {
+      console.error('[PrinterController] getPrinterStatus error:', err.message);
+      return 'printer-not-reachable';
+    }
+  }
+
 
   /**
    * Uploads the final G-code to the printer via the PrusaLink API and starts

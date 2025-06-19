@@ -79,3 +79,15 @@ Dadurch wird eine Anfrage gesendet und das erwartete Verhalten getestet.
 - Node.js (empfohlen: die neueste LTS-Version)
 - Yarn als Paketmanager
 
+## API Endpoints
+
+### `GET /api/printer/status`
+
+Fragt den aktuellen Status des Druckers ab und gibt diesen zurück.
+
+Beispielantwort:
+
+```json
+{ "status": "ready-for-print" }
+```
+
