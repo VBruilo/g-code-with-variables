@@ -1,10 +1,17 @@
 import axios from 'axios';
 import { JobStatus } from '../types/jobStatus';
 
+/**
+ * Wrapper around the PrusaLink API used to manage print jobs on the printer.
+ */
 export class PrusaLinkService {
   private baseUrl: string;
   private apiKey: string;
 
+  /**
+   * @param baseUrl - Base URL of the PrusaLink instance.
+   * @param apiKey - API key for authenticating requests.
+   */
   constructor(
     baseUrl: string = process.env.PRUSALINK_URL || 'http://192.168.12.20',
     apiKey: string = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN'
@@ -13,10 +20,18 @@ export class PrusaLinkService {
     this.apiKey = apiKey;
   }
 
+  /**
+   * Helper to build the authentication headers for PrusaLink requests.
+   */
   private getAuthHeaders(additional: Record<string, any> = {}): Record<string, any> {
     return { 'X-Api-Key': this.apiKey, ...additional };
   }
 
+  /**
+   * Uploads the given G-code to the printer and starts the job immediately.
+   *
+   * @param gcode - The complete G-code to send to the printer.
+   */
   async uploadAndPrint(gcode: string): Promise<void> {
     const gcodeBuffer = Buffer.from(gcode, 'utf-8');
     const endpointUrl = `${this.baseUrl}/api/v1/files/usb/Vlad_Tests/final.gcode`;
@@ -30,6 +45,9 @@ export class PrusaLinkService {
     });
   }
 
+  /**
+   * Queries the current job information and returns its ID or `null` if idle.
+   */
   async getCurrentJobId(): Promise<string | null> {
     const resp = await axios.get(`${this.baseUrl}/api/v1/job`, { headers: this.getAuthHeaders() });
     if (resp.status === 204) {
@@ -42,6 +60,9 @@ export class PrusaLinkService {
     return null;
   }
 
+  /**
+   * Retrieves the overall printer status and maps it to a friendly string.
+   */
   async getPrinterStatus(): Promise<string> {
     try {
       const resp = await axios.get(`${this.baseUrl}/api/v1/status`, { headers: this.getAuthHeaders() });
@@ -60,6 +81,11 @@ export class PrusaLinkService {
     }
   }
 
+  /**
+   * Fetches detailed status information about a specific job.
+   *
+   * @param jobId - Identifier of the job to query.
+   */
   async getPrintStatus(jobId: string): Promise<JobStatus> {
     const resp = await axios.get(`${this.baseUrl}/api/v1/job`, { headers: this.getAuthHeaders() });
     if (resp.status === 204) {
@@ -91,14 +117,23 @@ export class PrusaLinkService {
     };
   }
 
+  /**
+   * Sends a pause request for the given job.
+   */
   async pauseJob(jobId: string): Promise<void> {
     await axios.put(`${this.baseUrl}/api/v1/job/${jobId}/pause`, null, { headers: this.getAuthHeaders() });
   }
 
+  /**
+   * Resumes a previously paused job.
+   */
   async resumeJob(jobId: string): Promise<void> {
     await axios.put(`${this.baseUrl}/api/v1/job/${jobId}/resume`, null, { headers: this.getAuthHeaders() });
   }
 
+  /**
+   * Cancels the specified job on the printer.
+   */
   async cancelJob(jobId: string): Promise<void> {
     await axios.delete(`${this.baseUrl}/api/v1/job/${jobId}`, { headers: this.getAuthHeaders() });
   }
