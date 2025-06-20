@@ -1,106 +1,94 @@
-# Parameterized_G_Code
-Bachelor Thesis. Generation and Usage of Parameterized G-code for Additive Manufacturing
+# Parameterized G-Code
 
-# Parameterized G-Code Server
+A TypeScript-based server for generating parameterized G-code for additive manufacturing. The project contains two components:
 
-Dieses Projekt besteht aus zwei Hauptkomponenten:
+1. **Mock Config Server** – small Express server serving example configuration values.
+2. **Parameterized G-Code Server** – the main application that creates final G-code and communicates with a PrusaLink printer.
 
-1. **Mock Config Server**: Ein einfacher Express-Server, der Beispielkonfigurationswerte bereitstellt.
-2. **Parameterized G-Code Server**: Der Hauptserver der Anwendung, der mit TypeScript läuft.
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (latest LTS recommended)
+- [Yarn](https://yarnpkg.com/) package manager
 
 ## Installation
 
-Stelle sicher, dass du [Yarn](https://yarnpkg.com/) installiert hast.
+```sh
+yarn install
+```
 
-1. Klone das Repository oder navigiere in das Projektverzeichnis.
-2. Installiere die Abhängigkeiten mit:
-   ```sh
-   yarn install
-   ```
+## Running the Servers
 
-## Server starten
-
-### 1. Mock Config Server starten
-
-Navigiere in den Ordner `mock-config-server` und starte den Server:
+### Start the Mock Config Server
 
 ```sh
 cd mock-config-server
 node index.js
 ```
-
-Nach dem erfolgreichen Start sollte im Terminal folgende Meldung erscheinen:
-
+After starting, you should see:
 ```
 Mock Config Server listening on port 3001
 ```
 
-### 2. Hauptserver starten
+### Start the Main Server
 
-Navigiere zurück in den Hauptordner und starte den Hauptserver mit:
-
+From the repository root:
 ```sh
 yarn dev
 ```
 
-Nach einem erfolgreichen Start sollte eine entsprechende Meldung ausgegeben werden.
+### Example Request
 
-### 3. Beispielhafter Befehl ausführen
-
-Nachdem beide Server laufen, kannst du einen Beispielbefehl ausführen:
-
+With both servers running, execute:
 ```sh
 cd mock-config-server
 node callPrint.js
 ```
+This sends a request to the main server and demonstrates expected behaviour.
 
-Dadurch wird eine Anfrage gesendet und das erwartete Verhalten getestet.
-
-## Struktur des Projekts
+## Project Structure
 
 ```
-/mock-config-server       # Mock Server mit Express
-  ├── index.js            
-  ├── callPrint.js     
-  ├── package.json        
-/parameterized_g-code     # G-Code Dateien
-  ├── src
-      ├── config          # Konfigurationsdateien
-      ├── controller      # Steuerungslogik
-      ├── routes          # API-Routen
-      ├── transformer     # Verarbeitung von G-Code
-  ├── server.ts           # Startpunkt des Hauptservers
-  ├── package.json        # Abhängigkeiten für den Hauptserver
-  ├── tsconfig.json       # TypeScript Konfiguration
+mock-config-server/          # Express mock server
+  index.js
+  callPrint.js
+  package.json
+src/                         # Main server source
+  config.ts                  # Environment configuration
+  controller/                # Controllers
+  routes/                    # API routes
+  services/                  # Business logic
+  transformer/               # G-code transformation
+  server.ts                  # Application entrypoint
+parameterized_g-code/        # G-code templates and output
 ```
 
-## Voraussetzungen
+## Environment Variables
 
-- Node.js (empfohlen: die neueste LTS-Version)
-- Yarn als Paketmanager
-
-## Umgebungsvariablen
-
-Der Server liest bestimmte Einstellungen aus Umgebungsvariablen. Für die lokale
-Entwicklung werden folgende Standardwerte verwendet, falls keine Variablen
-gesetzt sind:
-
-- `CONFIG_SERVER_URL` – Basis-URL des Konfigurationsservers
-  (Standard: `http://localhost:3011`)
-- `PRUSALINK_URL` – Adresse der PrusaLink-Instanz
-  (Standard: `http://192.168.12.20`)
-- `PRUSALINK_API_KEY` – API-Schlüssel für PrusaLink
-  (Standard: `GGLfRCFkCEFXrEN`)
+- `CONFIG_SERVER_URL` – configuration server base URL (default `http://localhost:3011`)
+- `PRUSALINK_URL` – PrusaLink instance URL (default `http://192.168.12.20`)
+- `PRUSALINK_API_KEY` – API key for PrusaLink (default `GGLfRCFkCEFXrEN`)
 
 ## API Endpoints
 
 ### `GET /api/printer/status`
+Returns the mapped printer status.
 
-Fragt den aktuellen Status des Druckers ab und gibt diesen zurück.
-
-Beispielantwort:
-
+Example response:
 ```json
 { "status": "ready-for-print" }
 ```
+
+Additional endpoints for starting, pausing and monitoring jobs are defined in [src/routes/controllerRoutes.ts](src/routes/controllerRoutes.ts).
+
+## Testing
+
+Run the unit tests with:
+
+```sh
+yarn test
+```
+
+## License
+
+Released under the [MIT License](LICENSE).
 
