@@ -26,7 +26,7 @@ node index.js
 ```
 After starting, you should see:
 ```
-Mock Config Server listening on port 3001
+Mock Config Server listening on port 3011
 ```
 
 ### Start the Main Server
@@ -55,11 +55,16 @@ mock-config-server/          # Express mock server
 src/                         # Main server source
   config.ts                  # Environment configuration
   controller/                # Controllers
+  helpers/                   # Handlebars Helpers
   routes/                    # API routes
+  middleware/                # API Middleware
   services/                  # Business logic
   transformer/               # G-code transformation
+  types/                     # Interfaces
+  utilities/                 # Utilities Functions
   server.ts                  # Application entrypoint
 parameterized_g-code/        # G-code templates and output
+gcode/                      # G-code templates for logo or body
 ```
 
 ## Environment Variables
