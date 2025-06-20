@@ -3,6 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 import modelsMetadata from './models.json';
+import type { ParsedParams } from '../types/parsedParams';
+export type { ParsedParams } from '../types/parsedParams';
 
 
 export interface ModelMeta {
@@ -22,13 +24,6 @@ export interface Placement {
   offsetY: number;
 }
 
-export interface ParsedParams {
-  material: string;
-  sizes: number[];
-  spacingX: number;
-  spacingY: number;
-  maxColumns: number;
-}
 
 type ModelsConfig = Record<string, ModelMeta[]>;
 

@@ -1,6 +1,8 @@
 // src/utilities/gcodeUtils.ts
 import fs from 'fs';
 import path from 'path';
+import type { ParsedParams } from '../types/parsedParams';
+export type { ParsedParams } from '../types/parsedParams';
 
 export interface SnippetParams {
 
@@ -11,13 +13,6 @@ export interface GCodeParameters {
   [key: string]: string | number | boolean | any;
 }
 
-export interface ParsedParams {
-  material: string;
-  sizes: number[];
-  spacingX: number;
-  spacingY: number;
-  maxColumns: number;
-}
 
 /**
  * Validate that the template contains the `;; MODELS_PLACEHOLDER` marker.
