@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { ConfigServerResponse, ConfigParamDef } from '../types/configServer';
+import { CONFIG_SERVER_URL } from '../config';
 
 export class ConfigService {
   private baseUrl: string;
 
-  constructor(baseUrl = 'http://localhost:3011') {
+  constructor(baseUrl = CONFIG_SERVER_URL) {
     this.baseUrl = baseUrl;
   }
 

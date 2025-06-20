@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { JobStatus } from '../types/jobStatus';
+import { PRUSALINK_URL, PRUSALINK_API_KEY } from '../config';
 
 export class PrusaLinkService {
   private baseUrl: string;
   private apiKey: string;
 
   constructor(
-    baseUrl: string = process.env.PRUSALINK_URL || 'http://192.168.12.20',
-    apiKey: string = process.env.PRUSALINK_API_KEY || 'GGLfRCFkCEFXrEN'
+    baseUrl: string = PRUSALINK_URL,
+    apiKey: string = PRUSALINK_API_KEY
   ) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;

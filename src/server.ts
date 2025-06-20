@@ -2,6 +2,7 @@
 import express, { Request, Response } from 'express';
 import controllerRoutes from './routes/controllerRoutes';
 import { errorHandler } from './middleware/errorHandler';
+import './config';
 
 
 /**
