@@ -37,10 +37,10 @@ export class GCodeTransformer {
     const flat = flattenConfigParameters(rawParams);
     const merged = { ...defaultParams, ...flat };
 
-    // 1) Modell einfügen
+    // 1) Insert model
     let content = await this.modelPlacement(gcodeContent, merged);
 
-    // 2) Handlebars-Platzhalter ersetzen
+    // 2) Replace Handlebars placeholders
     return this.replacePlaceholders(content, merged);
   }
 
