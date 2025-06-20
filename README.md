@@ -79,6 +79,19 @@ Dadurch wird eine Anfrage gesendet und das erwartete Verhalten getestet.
 - Node.js (empfohlen: die neueste LTS-Version)
 - Yarn als Paketmanager
 
+## Umgebungsvariablen
+
+Der Server liest bestimmte Einstellungen aus Umgebungsvariablen. Für die lokale
+Entwicklung werden folgende Standardwerte verwendet, falls keine Variablen
+gesetzt sind:
+
+- `CONFIG_SERVER_URL` – Basis-URL des Konfigurationsservers
+  (Standard: `http://localhost:3011`)
+- `PRUSALINK_URL` – Adresse der PrusaLink-Instanz
+  (Standard: `http://192.168.12.20`)
+- `PRUSALINK_API_KEY` – API-Schlüssel für PrusaLink
+  (Standard: `GGLfRCFkCEFXrEN`)
+
 ## API Endpoints
 
 ### `GET /api/printer/status`

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ConfigServerResponse, ConfigParamDef } from '../types/configServer';
+import { CONFIG_SERVER_URL } from '../config';
 
 /**
  * Service responsible for retrieving configuration parameters from the
@@ -9,9 +10,10 @@ export class ConfigService {
   private baseUrl: string;
 
   /**
-   * @param baseUrl - Base URL of the mock config server.
+   * @param baseUrl - Base URL of the config server.
    */
-  constructor(baseUrl = 'http://localhost:3011') {
+  constructor(baseUrl = CONFIG_SERVER_URL) { {
+
     this.baseUrl = baseUrl;
   }
 
