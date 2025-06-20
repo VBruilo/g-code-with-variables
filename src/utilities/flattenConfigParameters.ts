@@ -40,7 +40,7 @@ export function flattenConfigParameters(
   if (height?.content.length) {
     // height is specified in centimeters
     const heightCm = Number(height.content[0].value);
-    // convert to millimeters and cap to a maximum of 7 mm
+    // convert to millimeters and cap to a maximum of 2 mm
     const heightMm = heightCm * 10;
     const cappedMm = Math.min(heightMm, 2);
     // each layer is 0.2 mm high
