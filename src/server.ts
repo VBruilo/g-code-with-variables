@@ -1,6 +1,7 @@
 // src/server.ts
 import express, { Request, Response } from 'express';
 import controllerRoutes from './routes/controllerRoutes';
+import { errorHandler } from './middleware/errorHandler';
 
 
 /**
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 /**
  * Registers controller routes under the `/api` path.
  */
+
 app.use('/api', controllerRoutes);
 
 /**
@@ -31,6 +33,9 @@ app.use('/api', controllerRoutes);
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'OK' });
 });
+
+// Central error handler
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

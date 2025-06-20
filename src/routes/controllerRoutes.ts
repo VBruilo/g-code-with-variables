@@ -1,6 +1,7 @@
 // src/routes/controllerRoutes.ts
 import { Router } from 'express';
 import { printerController } from '../controller/printerController';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 /**
  * Express router providing endpoints for controlling the printer.
@@ -20,28 +21,21 @@ const router = Router();
  * @returns 201 - `{ jobId: string }` when the job is started.
 * @returns 500 - `{ error: string }` on failure.
 */
-router.post('/prints/parameterized/coin', async (req, res) => {
-  try {
+router.post(
+  '/prints/parameterized/coin',
+  asyncHandler(async (req, res) => {
     const { machineConfigID, configSetID } = req.body;
     if (!machineConfigID || !configSetID) {
-      return res
+      res
         .status(400)
         .json({ error: 'machineConfigID and configSetID are required' });
+      return;
     }
 
     const jobId = await printerController.startPrint(machineConfigID, configSetID);
 
-    return res.status(201).location(jobId).json({ jobId });
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while starting print:', 
-      err.message
-    );
-    return res
-      .status(500)
-      .json({ error: err.message });
-    }
-  }
+    res.status(201).location(jobId).json({ jobId });
+  })
 );
 
 
@@ -54,26 +48,16 @@ router.post('/prints/parameterized/coin', async (req, res) => {
  * @returns 404 - `{ error: string }` when no job is running.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
-  try {
-
+router.get(
+  '/prints/parameterized/coin/getJobId',
+  asyncHandler(async (req, res) => {
     const jobId = await printerController.getCurrentJobId();
     if (!jobId) {
-      return res
-        .status(404)
-        .json({ error: 'No active print job found' });
+      res.status(404).json({ error: 'No active print job found' });
+      return;
     }
-    return res.json({ jobId });
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while getting current job ID:',
-      err.message
-    );
-    return res
-      .status(500)
-      .json({ error: 'Internal server error while getting current job ID' });
-    }
-  }
+    res.json({ jobId });
+  })
 );
 
 
@@ -85,21 +69,16 @@ router.get('/prints/parameterized/coin/getJobId', async (req, res) => {
  * @returns 200 - `JobStatus` object describing the current progress.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
-  try {
+router.get(
+  '/prints/parameterized/coin/:coinJobId/status',
+  asyncHandler(async (req, res) => {
     const { coinJobId } = req.params;
 
     const status = await printerController.getPrintStatus(coinJobId);
 
-    return res.json(status);
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while getting print status:',
-      err.message
-    );
-    return res.status(500).json({ error: err.message });
-  }
-});
+    res.json(status);
+  })
+);
 
 
 /**
@@ -110,22 +89,13 @@ router.get('/prints/parameterized/coin/:coinJobId/status', async (req, res) => {
  * @returns 204 - When the job was paused successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
-    try {
-      const { coinJobId } = req.params;
-      await printerController.pausePrint(coinJobId);
-      // Spec: 204 No Content
-      return res.sendStatus(204);
-    } catch (err: any) {
-      console.error(
-        '[ControllerRoutes] Unexpected error while pausing print:',
-        err
-      );
-      return res
-        .status(500)
-        .json({ error: 'Internal server error while pausing print' });
-    }
-  }
+router.put(
+  '/prints/parameterized/coin/:coinJobId/pause',
+  asyncHandler(async (req, res) => {
+    const { coinJobId } = req.params;
+    await printerController.pausePrint(coinJobId);
+    res.sendStatus(204);
+  })
 );
 
 /**
@@ -136,21 +106,13 @@ router.put('/prints/parameterized/coin/:coinJobId/pause', async (req, res) => {
  * @returns 204 - When the job was resumed successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
-    try {
-          const { coinJobId } = req.params;
-          await printerController.resumePrint(coinJobId);
-          return res.sendStatus(204);
-        } catch (err: any) {
-      console.error(
-        '[ControllerRoutes] Error while resuming print:', 
-        err.message
-      );
-      return res
-        .status(500)
-        .json({ error: err.message });
-    }
-  }
+router.put(
+  '/prints/parameterized/coin/:coinJobId/resume',
+  asyncHandler(async (req, res) => {
+    const { coinJobId } = req.params;
+    await printerController.resumePrint(coinJobId);
+    res.sendStatus(204);
+  })
 );
 
 /**
@@ -161,21 +123,13 @@ router.put('/prints/parameterized/coin/:coinJobId/resume', async (req, res) => {
  * @returns 204 - When the job was cancelled successfully.
  * @returns 500 - `{ error: string }` on internal errors.
  */
-router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) => {
-  try {
+router.delete(
+  '/prints/parameterized/coin/:coinJobId/cancel',
+  asyncHandler(async (req, res) => {
     const { coinJobId } = req.params;
     await printerController.cancelPrint(coinJobId);
-    return res.sendStatus(204)
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while cancelling print:',
-      err.message
-    );
-    return res
-      .status(500)
-      .json({ error: err.message });
-    }
-  }
+    res.sendStatus(204);
+  })
 );
 
 /**
@@ -188,26 +142,22 @@ router.delete('/prints/parameterized/coin/:coinJobId/cancel', async (req, res) =
  * @returns 400 - `{ error: string }` on validation errors.
  * @returns 500 - `{ error: string }` on failure.
  */
-router.put('/printer/status', async (req, res) => {
-  try {
+router.put(
+  '/printer/status',
+  asyncHandler(async (req, res) => {
     const { status } = req.body;
     if (status !== 'start-up' && status !== 'shutting-down') {
-      return res.status(400).json({
+      res.status(400).json({
         error: "Status must be either 'start-up' or 'shutting-down'",
       });
+      return;
     }
 
     await printerController.updatePrinterStatus(status);
 
-    return res.sendStatus(202);
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while updating printer status:',
-      err.message
-    );
-    return res.status(500).json({ error: err.message });
-  }
-});
+    res.sendStatus(202);
+  })
+);
 
 /**
  * GET `/printer/status`
@@ -217,17 +167,12 @@ router.put('/printer/status', async (req, res) => {
  * @returns 200 - `{ status: string }` with the mapped status.
  * @returns 500 - `{ error: string }` on failure.
  */
-router.get('/printer/status', async (req, res) => {
-  try {
+router.get(
+  '/printer/status',
+  asyncHandler(async (req, res) => {
     const status = await printerController.getPrinterStatus();
-    return res.json({ status });
-  } catch (err: any) {
-    console.error(
-      '[ControllerRoutes] Error while getting printer status:',
-      err.message
-    );
-    return res.status(500).json({ error: err.message });
-  }
-});
+    res.json({ status });
+  })
+);
 
 export default router;

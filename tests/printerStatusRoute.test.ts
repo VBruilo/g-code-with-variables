@@ -24,5 +24,6 @@ describe('GET /api/printer/status', () => {
     const res = await request(app).get('/api/printer/status');
 
     expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'fail' });
   });
 });
