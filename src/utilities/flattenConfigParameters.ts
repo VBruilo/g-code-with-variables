@@ -21,7 +21,7 @@ export function flattenConfigParameters(
   if (coinColor) {
     const first_head = coinColor.parameters['coin-printing-head-no'];
     if (first_head?.content.length) {
-      result.FIRST_PRINTING_HEAD = Number(first_head.content[0].value);
+      result.FIRST_PRINTING_HEAD = (Number(first_head.content[0].value)-1);
     }
     const first_mat = coinColor.parameters['coin-material'];
     if (first_mat?.content.length) {
@@ -40,9 +40,9 @@ export function flattenConfigParameters(
   if (height?.content.length) {
     // height is specified in centimeters
     const heightCm = Number(height.content[0].value);
-    // convert to millimeters and cap to a maximum of 7 mm
+    // convert to millimeters and cap to a maximum of 2 mm
     const heightMm = heightCm * 10;
-    const cappedMm = Math.min(heightMm, 7);
+    const cappedMm = Math.min(heightMm, 2);
     // each layer is 0.2 mm high
     const layers = Math.round(cappedMm / 0.2);
     result.LAYERS = layers;
@@ -58,7 +58,7 @@ export function flattenConfigParameters(
     const logo_color = top.parameters['logo-color'];
     const second_head = logo_color.parameters['coin-printing-head-no'];
     if (second_head?.content.length) {
-      result.SECOND_PRINTING_HEAD = Number(second_head.content[0].value);
+      result.SECOND_PRINTING_HEAD = (Number(second_head.content[0].value)-1);
     }
     const second_mat = top.parameters['logo-material'];
     if (second_mat?.content.length) {
