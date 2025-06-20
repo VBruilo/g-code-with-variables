@@ -12,7 +12,7 @@ export class ConfigService {
   /**
    * @param baseUrl - Base URL of the config server.
    */
-  constructor(baseUrl = CONFIG_SERVER_URL) { {
+  constructor(baseUrl = CONFIG_SERVER_URL) {
 
     this.baseUrl = baseUrl;
   }
