@@ -19,7 +19,7 @@ export function registerHandlebarsHelpers(): void {
     index: number,
     options: Handlebars.HelperOptions
   ): any => {
-    // keyValue in einen String umwandeln, da die Keys in deinem JSON als Strings vorliegen
+    // Convert keyValue to a string because your JSON keys are strings
     const key: string = String(keyValue);
   
     if (!dataObject || typeof dataObject !== 'object') {
@@ -45,8 +45,8 @@ export function registerHandlebarsHelpers(): void {
   handlebars.registerHelper('repeat', function (count, options) {
     let out = '';
     for (let i = 0; i < count; i++) {
-      // "options.fn(...)" rendert, was zwischen {{#repeat ...}} und {{/repeat}} steht
-      // Die Variable index = i übergeben wir in den Kontext
+      // "options.fn(...)" renders what is between {{#repeat ...}} and {{/repeat}}
+      // Pass the variable index = i into the context
       out += options.fn({
         index: i,
       });
@@ -59,9 +59,9 @@ export function registerHandlebarsHelpers(): void {
    * result formatted with three decimal places.
    */
   handlebars.registerHelper('calcZ', function (index, baseZ, offset) {
-    // baseZ und offset werden als Strings übergeben => parseFloat
+    // baseZ and offset are passed as strings -> parseFloat
     const zValue = parseFloat(baseZ) + (index * parseFloat(offset));
-    return zValue.toFixed(3);  // 3 Nachkommastellen
+    return zValue.toFixed(3);  // 3 decimal places
   });
 
   /**
@@ -69,22 +69,22 @@ export function registerHandlebarsHelpers(): void {
    * repeated layers.
    */
   handlebars.registerHelper('shiftZ', function (originalZ, repeatCount, layerHeight) {
-    // originalZ: Ursprünglicher Z-Wert (z.B. "0.8")
-    // repeatCount: Anzahl der Wiederholungen (z.B. "3")
-    // layerHeight: Höhe einer Schicht (z.B. "0.2")
+    // originalZ: original Z value (e.g. "0.8")
+    // repeatCount: number of repetitions (e.g. "3")
+    // layerHeight: height of one layer (e.g. "0.2")
   
-    // Stelle sicher, dass wir mit Zahlen arbeiten
+    // Ensure that we work with numbers
     const zVal = parseFloat(originalZ);
     const rc = parseInt(repeatCount, 10);
     const lh = parseFloat(layerHeight);
   
-    // Die Verschiebung entspricht (repeatCount - 1) * layerHeight
+    // The shift equals (repeatCount - 1) * layerHeight
     const shift = (rc - 1) * lh;
     
-    // Neues Z = originalZ + shift
+    // New Z = originalZ + shift
     const result = zVal + shift;
   
-    return result.toFixed(3); // z. B. auf drei Nachkommastellen formatieren
+    return result.toFixed(3); // format to e.g. three decimal places
   });
 
   /**
@@ -115,7 +115,7 @@ export function registerHandlebarsHelpers(): void {
    * Usage in templates: `{{offHeaters FIRST_PRINTING_HEAD SECOND_PRINTING_HEAD}}`
    */
   handlebars.registerHelper('offHeaters', (firstHead: number, secondHead: number): string => {
-    // Der aktive Druckkopf als Zahl
+    // The active print head as a number
     const first: number = firstHead;
     const second: number = secondHead;
     const heads: number[] = [0, 1, 2, 3, 4];

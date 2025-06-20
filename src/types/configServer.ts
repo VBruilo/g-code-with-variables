@@ -1,25 +1,25 @@
 // src/types/configServer.ts
 
-/** Metadaten zur Config (Name, Version, Lizenz…) */
+/** Metadata about the config (name, version, license, …) */
 export interface ConfigMetadata {
   name: string;
 
-  /** ggf. noch weitere Felder */
+  /** additional fields may be added */
 }
 
-/** Ein einzelner Content-Eintrag aus dem Config-Response */
+/** A single content entry from the config response */
 export interface ConfigContent {
-  /** ggf. label, description, … */
+  /** optional label, description, … */
   value: string | number;
 }
 
-/** Definition eines Parameters mit optionalen Sub-Parametern */
+/** Definition of a parameter with optional sub-parameters */
 export interface ConfigParamDef {
   content: ConfigContent[];
   parameters: Record<string, ConfigParamDef>;
 }
 
-/** Gesamte Struktur der Antwort des Config-Servers */
+/** Overall structure of the config server response */
 export interface ConfigServerResponse {
   metadata: ConfigMetadata;                                
   parameters: Record<string, ConfigParamDef>;

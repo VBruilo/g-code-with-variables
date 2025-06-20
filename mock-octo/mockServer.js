@@ -9,16 +9,16 @@ let currentJob = null;
 let printerState = 'IDLE';
 let nextJobId = 1;
 
-// Express-Middleware, um den rohen Body als Buffer zu parsen (für application/octet-stream)
+// Express middleware to parse the raw body as a buffer (for application/octet-stream)
 app.use(express.raw({ type: 'application/octet-stream', limit: '50mb' }));
 
-// Mock Endpoint für PrusaLink API
+// Mock endpoint for the PrusaLink API
 // PUT /api/v1/files/local/:filename
 app.put('/api/v1/files/local/:filename', (req, res) => {
   const filename = req.params.filename;
   console.log('[MockPrusaLink] Received file upload for:', filename);
 
-  // Header auslesen
+  // Read headers
   const contentLength = req.header('Content-Length');
   const printAfterUpload = req.header('Print-After-Upload');
   const overwrite = req.header('Overwrite');
@@ -27,25 +27,25 @@ app.put('/api/v1/files/local/:filename', (req, res) => {
   console.log('[MockPrusaLink] Print-After-Upload:', printAfterUpload);
   console.log('[MockPrusaLink] Overwrite:', overwrite);
 
-  // Zielverzeichnis definieren
+  // Define target directory
   const uploadDir = path.join(__dirname, 'mock_uploads');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
   const filePath = path.join(uploadDir, filename);
 
-  // Falls die Datei existiert und Overwrite nicht erlaubt ist, Fehler zurückgeben
+  // Return an error if the file exists and overwrite isn’t allowed
   if (fs.existsSync(filePath) && overwrite !== '?1') {
     return res.status(409).json({ 
       error: 'File already exists and overwrite not allowed'
     });
   }
 
-  // Datei speichern (der Body liegt als Buffer vor)
+  // Save the file (the body is provided as a buffer)
   fs.writeFileSync(filePath, req.body);
   console.log('[MockPrusaLink] File saved:', filePath);
 
-  // Optional: Simuliere den Druckstart, falls Print-After-Upload gesetzt ist
+  // Optionally simulate starting the print if Print-After-Upload is set
   if (printAfterUpload === '?1') {
     currentJob = {
       id: nextJobId++,
@@ -58,7 +58,7 @@ app.put('/api/v1/files/local/:filename', (req, res) => {
     console.log('[MockPrusaLink] Starting print job id', currentJob.id, 'for file:', filename);
   }
 
-  // Antwort zurücksenden
+  // Send response
   return res.status(201).json({
     done: true,
     detail: 'File uploaded successfully (mock PrusaLink)',

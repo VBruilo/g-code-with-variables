@@ -110,7 +110,7 @@ export function insertModelBlocks(
     const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
     let assembled = '';
     for (const { model, offsetX, offsetY } of placements) {
-    // G92 und G1 Logik ist gerade nicht relevant, da es nur ein Modell geben wird
+    // G92 and G1 logic isn’t relevant right now because only one model will be used
 
       //assembled += `G1 X${offsetX} Y${offsetY}\n`;
       //assembled += `G92 X0 Y0\n`;
