@@ -1,14 +1,11 @@
-import express from 'express';
 import request from 'supertest';
 
 jest.mock('../src/controller/printerController');
 
-import router from '../src/routes/controllerRoutes';
 import { printerController } from '../src/controller/printerController';
+import { createTestApp } from './testUtils';
 
-const app = express();
-app.use(express.json());
-app.use('/api', router);
+const app = createTestApp();
 
 describe('GET /api/printer/status', () => {
   it('returns mapped printer status', async () => {
