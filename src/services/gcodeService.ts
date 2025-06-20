@@ -3,13 +3,23 @@ import path from 'path';
 import { GCodeTransformer } from '../transformer/gcodeTransformer';
 import { ConfigParamDef } from '../types/configServer';
 
+/**
+ * Generates the final G-code by combining templates with configuration
+ * parameters and convenience helpers.
+ */
 export class GcodeService {
   private transformer: GCodeTransformer;
 
+  /**
+   * @param transformer - Instance used to transform template G-code files.
+   */
   constructor(transformer = new GCodeTransformer()) {
     this.transformer = transformer;
   }
 
+  /**
+   * Selects the correct template file for the given filament type.
+   */
   private getTemplateFile(filamentType: string): string {
     if (filamentType === 'PLA') {
       return 'PLA_start_G-code.gcode';
@@ -20,6 +30,13 @@ export class GcodeService {
     throw new Error(`[GcodeService] Unsupported FILAMENT_TYPE: ${filamentType}.`);
   }
 
+  /**
+   * Creates the final G-code by loading the template, applying configuration
+   * values and writing the output file.
+   *
+   * @param rawParams - Configuration parameters retrieved from the config server.
+   * @returns Rendered G-code ready for printing.
+   */
   async createFinalGcode(rawParams: Record<string, ConfigParamDef>): Promise<string> {
     const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value || 'PETG';
     const templateFile = this.getTemplateFile(String(filamentType));
@@ -35,11 +52,17 @@ export class GcodeService {
     return finalGCode;
   }
 
+  /**
+   * Loads the calibration G-code file from disk.
+   */
   async loadCalibrationGcode(): Promise<string> {
     const calibrationPath = path.join(process.cwd(), 'gcode', 'printer_control', 'start-up.gcode');
     return fs.readFile(calibrationPath, 'utf-8');
   }
 
+  /**
+   * Loads the shutdown G-code file from disk.
+   */
   async loadShutdownGcode(): Promise<string> {
     const shutdownPath = path.join(process.cwd(), 'gcode', 'printer_control', 'shutting-down.gcode');
     return fs.readFile(shutdownPath, 'utf-8');
