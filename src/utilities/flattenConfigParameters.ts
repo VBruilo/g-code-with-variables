@@ -8,6 +8,12 @@ import { ConfigParamDef } from '../types/configServer';
  */
 const MODEL_SIZES = [20, 23.25, 25.75, 30];
 
+/** Base coin thickness in centimeters */
+const BASE_HEIGHT_CM = 0.21;
+
+/** Maximum supported coin thickness in centimeters */
+const MAX_HEIGHT_CM = 0.5;
+
 /**
  * Return the model size closest to the provided value.
  */
@@ -55,11 +61,12 @@ export function flattenConfigParameters(
   if (height?.content.length) {
     // height is specified in centimeters
     const heightCm = Number(height.content[0].value);
-    // convert to millimeters and cap to a maximum of 2 mm
-    const heightMm = heightCm * 10;
-    const cappedMm = Math.min(heightMm, 2);
+    // clamp to supported range
+    const clampedCm = Math.min(Math.max(heightCm, BASE_HEIGHT_CM), MAX_HEIGHT_CM);
+    // difference from base height in mm
+    const additionalMm = (clampedCm - BASE_HEIGHT_CM) * 10;
     // each layer is 0.2 mm high
-    const layers = Math.round(cappedMm / 0.2);
+    const layers = Math.round(additionalMm / 0.2);
     result.LAYERS = layers;
   }
   
