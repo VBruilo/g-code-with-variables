@@ -59,6 +59,15 @@ describe('flattenConfigParameters', () => {
     expect(result.MODEL_SIZE).toEqual([20, 23.25]);
   });
 
+  it('rounds values above 25.75 up to 30', () => {
+    const params: Record<string, ConfigParamDef> = {
+      width: { content: [{ value: 29 }], parameters: {} },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.MODEL_SIZE).toEqual([30]);
+  });
+
   it('caps height at 7mm when converting to layers', () => {
     const params: Record<string, ConfigParamDef> = {
       height: { content: [{ value: 10 }], parameters: {} },
