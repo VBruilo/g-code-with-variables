@@ -41,7 +41,7 @@ describe('flattenConfigParameters', () => {
       FIRST_PRINTING_HEAD: 0,
       FIRST_FILAMENT_TYPE: 'PLA',
       MODEL_SIZE: [20, 25.75],
-      LAYERS: 10,
+      LAYERS: 15,
       LOGO: 'LOGO',
       SECOND_PRINTING_HEAD: 1,
       SECOND_FILAMENT_TYPE: 'ABS',
@@ -68,13 +68,13 @@ describe('flattenConfigParameters', () => {
     expect(result.MODEL_SIZE).toEqual([30]);
   });
 
-  it('caps height at 7mm when converting to layers', () => {
+  it('clamps height at 0.5 cm when converting to layers', () => {
     const params: Record<string, ConfigParamDef> = {
       height: { content: [{ value: 10 }], parameters: {} },
     } as any;
 
     const result = flattenConfigParameters(params);
-    expect(result.LAYERS).toBe(10);
+    expect(result.LAYERS).toBe(15);
   });
 });
 
