@@ -38,16 +38,34 @@ describe('flattenConfigParameters', () => {
 
     const result = flattenConfigParameters(params);
     expect(result).toEqual({
-      FIRST_PRINTING_HEAD: 1,
+      FIRST_PRINTING_HEAD: 0,
       FIRST_FILAMENT_TYPE: 'PLA',
-      MODEL_SIZE: [20, 25],
-      LAYERS: 35,
+      MODEL_SIZE: [20, 25.75],
+      LAYERS: 10,
       LOGO: 'LOGO',
-      SECOND_PRINTING_HEAD: 2,
+      SECOND_PRINTING_HEAD: 1,
       SECOND_FILAMENT_TYPE: 'ABS',
       POS_X: 5,
       POS_Y: 7,
     });
+  });
+
+  it('rounds width values to nearest allowed size', () => {
+    const params: Record<string, ConfigParamDef> = {
+      width: { content: [{ value: 21 }, { value: 22 }], parameters: {} },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.MODEL_SIZE).toEqual([20, 23.25]);
+  });
+
+  it('rounds values above 25.75 up to 30', () => {
+    const params: Record<string, ConfigParamDef> = {
+      width: { content: [{ value: 29 }], parameters: {} },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.MODEL_SIZE).toEqual([30]);
   });
 
   it('caps height at 7mm when converting to layers', () => {
@@ -56,7 +74,7 @@ describe('flattenConfigParameters', () => {
     } as any;
 
     const result = flattenConfigParameters(params);
-    expect(result.LAYERS).toBe(35);
+    expect(result.LAYERS).toBe(10);
   });
 });
 

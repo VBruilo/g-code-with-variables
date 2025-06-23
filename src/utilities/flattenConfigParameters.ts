@@ -3,6 +3,21 @@
 import { ConfigParamDef } from '../types/configServer';
 
 /**
+ * Available model sizes. Used to map width values to the nearest
+ * supported one when flattening parameters.
+ */
+const MODEL_SIZES = [20, 23.25, 25.75, 30];
+
+/**
+ * Return the model size closest to the provided value.
+ */
+function nearestModelSize(value: number): number {
+  return MODEL_SIZES.reduce((prev, curr) =>
+    Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+  );
+}
+
+/**
  * Flatten the nested configuration returned by the config server into a simple key-value map.
  *
  * Expected keys include `coin-color`, `width`, `height`, `top-surface`, `bottom-surface` and `coordinates`.
@@ -32,7 +47,7 @@ export function flattenConfigParameters(
   // 2) width
   const width = params['width'];
   if (width?.content.length) {
-    result.MODEL_SIZE = width.content.map(c => Number(c.value));
+    result.MODEL_SIZE = width.content.map(c => nearestModelSize(Number(c.value)));
   }
 
   // 3) height
