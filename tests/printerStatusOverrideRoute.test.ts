@@ -1,6 +1,7 @@
 import express from 'express';
 import request from 'supertest';
 
+
 let getCurrentJobIdMock: jest.Mock;
 jest.mock('../src/controller/printerController', () => {
   const { PrinterController } = jest.requireActual('../src/controller/printerController');
@@ -8,6 +9,7 @@ jest.mock('../src/controller/printerController', () => {
   class StubPrusaLinkService {
     uploadAndPrint = jest.fn().mockResolvedValue(undefined);
     getCurrentJobId = getCurrentJobIdMock;
+
     getPrinterStatus = jest.fn().mockResolvedValue('from-prusa');
     getPrintStatus = jest.fn();
     pauseJob = jest.fn();
@@ -30,6 +32,7 @@ app.use('/api', router);
 
 afterEach(() => {
   jest.clearAllMocks();
+
   getCurrentJobIdMock.mockResolvedValue('job1');
 });
 

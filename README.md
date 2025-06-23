@@ -77,6 +77,7 @@ gcode/                      # G-code templates for logo or body
 
 ### `GET /api/printer/status`
 Returns the mapped printer status. If the status was previously set via a
+
 `PUT /api/printer/status` request, that value is returned as long as the printer
 is still executing the job triggered by the call. Once the job ID changes, the
 live value from PrusaLink is served again.
