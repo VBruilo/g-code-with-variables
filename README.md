@@ -76,12 +76,19 @@ gcode/                      # G-code templates for logo or body
 ## API Endpoints
 
 ### `GET /api/printer/status`
-Returns the mapped printer status.
+Returns the mapped printer status. If the status was previously set via a
+`PUT /api/printer/status` request, the stored value is returned instead of the
+live value from PrusaLink.
 
 Example response:
 ```json
 { "status": "ready-for-print" }
 ```
+
+### `PUT /api/printer/status`
+Starts either the calibration or shutdown sequence based on the provided
+`status` body property. The value is then returned by subsequent
+`GET /api/printer/status` calls.
 
 Additional endpoints for starting, pausing and monitoring jobs are defined in [src/routes/controllerRoutes.ts](src/routes/controllerRoutes.ts).
 

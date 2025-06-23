@@ -9,6 +9,7 @@ import { JobStatus } from '../types/jobStatus';
  */
 class PrinterController {
   private currentJobId?: string;
+  private overrideStatus?: 'start-up' | 'shutting-down';
 
   /**
    * Creates a new controller instance.
@@ -67,8 +68,10 @@ class PrinterController {
   public async updatePrinterStatus(status: 'start-up' | 'shutting-down'): Promise<void> {
     if (status === 'start-up') {
       await this.startCalibration();
+      this.overrideStatus = 'start-up';
     } else if (status === 'shutting-down') {
       await this.startShutdown();
+      this.overrideStatus = 'shutting-down';
     } else {
       throw new Error(`Invalid status: ${status}`);
     }
@@ -78,6 +81,9 @@ class PrinterController {
    * Retrieves the current status of the printer from PrusaLink.
    */
   public getPrinterStatus(): Promise<string> {
+    if (this.overrideStatus) {
+      return Promise.resolve(this.overrideStatus);
+    }
     return this.prusaLink.getPrinterStatus();
   }
 
