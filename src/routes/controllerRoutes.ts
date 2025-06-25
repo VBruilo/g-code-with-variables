@@ -171,8 +171,7 @@ router.get(
   '/printer/status',
   asyncHandler(async (req, res) => {
     const status = await printerController.getPrinterStatus();
-    res.json(status.status, status.temp_bed, status.temp_nozzle);
+    res.json(status);
   })
 );
-
 export default router;

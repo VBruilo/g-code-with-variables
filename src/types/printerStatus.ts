@@ -4,6 +4,4 @@ export interface PrinterStatus {
   status: String;
   /** Bed Temperature */
   temp_bed: number;
-  /** Nozzle Temperature */
-  temp_nozzle: number;
 }

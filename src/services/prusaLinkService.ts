@@ -73,12 +73,11 @@ export class PrusaLinkService {
 
       const isPrinterHotEnough = data?.printer?.temp_bed >= 50;
       const isPrinterHotEnoughExtruder = data?.printer?.temp_nozzle >= 150;
-      
+
       if (state === 'FINISHED' && isPrinterHotEnough && isPrinterHotEnoughExtruder) {
         return {
           status: 'ready-for-print',
           temp_bed: data?.printer?.temp_bed,
-          temp_nozzle: data?.printer?.temp_nozzle
         };
       }
       const mapping: Record<string, string> = {
@@ -92,13 +91,11 @@ export class PrusaLinkService {
       return {
         status:mapping[state ?? ''] ?? state?.toLowerCase() ?? 'unknown',
         temp_bed: data?.printer?.temp_bed,
-        temp_nozzle: data?.printer?.temp_nozzle,
       }
     } catch {
       return {
         status: 'printer-not-reachable',
         temp_bed: 0,
-        temp_nozzle: 0,
       }
     }
   }

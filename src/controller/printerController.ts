@@ -94,7 +94,6 @@ class PrinterController {
         return {
           status: this.overrideStatus,
           temp_bed: (await this.prusaLink.getPrinterStatus()).temp_bed || 0,
-          temp_nozzle: (await this.prusaLink.getPrinterStatus()).temp_nozzle || 0,
         };
       }
       if (jobId !== this.overrideJobId) {
@@ -106,7 +105,6 @@ class PrinterController {
       return {
           status: 'inactive',
           temp_bed: (await this.prusaLink.getPrinterStatus()).temp_bed || 0,
-          temp_nozzle: (await this.prusaLink.getPrinterStatus()).temp_nozzle || 0,
         };
     }
     return this.prusaLink.getPrinterStatus();
