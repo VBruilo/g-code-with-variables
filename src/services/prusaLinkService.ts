@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { JobStatus } from '../types/jobStatus';
+import { PrinterStatus } from '../types/printerStatus';
 import { PRUSALINK_URL, PRUSALINK_API_KEY } from '../config';
 
 /**
@@ -64,11 +65,22 @@ export class PrusaLinkService {
   /**
    * Retrieves the overall printer status and maps it to a friendly string.
    */
-  async getPrinterStatus(): Promise<string> {
+  async getPrinterStatus(): Promise<PrinterStatus> {
     try {
       const resp = await axios.get(`${this.baseUrl}/api/v1/status`, { headers: this.getAuthHeaders() });
       const data: any = resp.data;
       const state: string | undefined = data?.printer?.state;
+
+      const isPrinterHotEnough = data?.printer?.temp_bed >= 50;
+      const isPrinterHotEnoughExtruder = data?.printer?.temp_nozzle >= 150;
+      
+      if (state === 'FINISHED' && isPrinterHotEnough && isPrinterHotEnoughExtruder) {
+        return {
+          status: 'ready-for-print',
+          temp_bed: data?.printer?.temp_bed,
+          temp_nozzle: data?.printer?.temp_nozzle
+        };
+      }
       const mapping: Record<string, string> = {
         IDLE: 'ready-for-print',
         PRINTING: 'printing',
@@ -76,9 +88,18 @@ export class PrusaLinkService {
         FINISHED: 'finished',
         ERROR: 'error',
       };
-      return mapping[state ?? ''] ?? state?.toLowerCase() ?? 'unknown';
+
+      return {
+        status:mapping[state ?? ''] ?? state?.toLowerCase() ?? 'unknown',
+        temp_bed: data?.printer?.temp_bed,
+        temp_nozzle: data?.printer?.temp_nozzle,
+      }
     } catch {
-      return 'printer-not-reachable';
+      return {
+        status: 'printer-not-reachable',
+        temp_bed: 0,
+        temp_nozzle: 0,
+      }
     }
   }
 

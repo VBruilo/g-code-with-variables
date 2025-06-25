@@ -3,6 +3,7 @@ import { ConfigService } from '../services/configService';
 import { GcodeService } from '../services/gcodeService';
 import { PrusaLinkService } from '../services/prusaLinkService';
 import { JobStatus } from '../types/jobStatus';
+import { PrinterStatus } from '../types/printerStatus';
 
 /**
  * Coordinates print related operations by delegating to the service layer.
@@ -83,11 +84,15 @@ class PrinterController {
   /**
    * Retrieves the current status of the printer from PrusaLink.
    */
-  public async getPrinterStatus(): Promise<string> {
+  public async getPrinterStatus(): Promise<PrinterStatus> {
     if (this.overrideStatus) {
       const jobId = await this.prusaLink.getCurrentJobId();
       if (jobId && this.overrideJobId && jobId === this.overrideJobId) {
-        return this.overrideStatus;
+        return {
+          status: this.overrideStatus,
+          temp_bed: 0,
+          temp_nozzle: 0,
+        };
       }
       if (jobId !== this.overrideJobId) {
         this.overrideStatus = undefined;
