@@ -109,7 +109,7 @@ export class PrusaLinkService {
     if (resp.status === 204) {
       return {
         id: parseInt(jobId, 10),
-        state: 'FINISHED',
+        state: 'finished',
         progress: 100,
         timePrinting: 0,
         timeRemaining: 0,
@@ -118,7 +118,7 @@ export class PrusaLinkService {
 
     const job = resp.data as {
       id: number;
-      state: 'PRINTING'| 'PAUSED'| 'FINISHED'| 'STOPPED'| 'ERROR';
+      state: 'printing'| 'paused'| 'finished'| 'stopped'| 'error';
       progress: number;
       time_printing: number;
       time_remaining: number;

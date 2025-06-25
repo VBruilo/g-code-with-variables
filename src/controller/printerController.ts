@@ -129,7 +129,7 @@ class PrinterController {
     }
 
     const status = await this.prusaLink.getPrintStatus(jobId);
-    if (status.state === 'FINISHED' || status.state === 'STOPPED') {
+    if (status.state === 'finished' || status.state === 'stopped') {
       this.currentJobId = undefined;
     }
     return status;

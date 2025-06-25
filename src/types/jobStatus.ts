@@ -2,7 +2,7 @@
 export interface JobStatus {
   /** job.id */
   id: number;
-  state: 'PRINTING'| 'PAUSED'| 'FINISHED'| 'STOPPED'| 'ERROR';
+  state: 'printing'| 'paused'| 'finished'| 'stopped'| 'error';
   /** percent complete */
   progress: number;
   /** Sekunden */
