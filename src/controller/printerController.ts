@@ -11,6 +11,7 @@ class PrinterController {
   private currentJobId?: string;
   private overrideStatus?: 'start-up' | 'shutting-down';
   private overrideJobId?: string;
+  private isActive = false;
 
   /**
    * Creates a new controller instance.
@@ -71,10 +72,12 @@ class PrinterController {
       await this.startCalibration();
       this.overrideStatus = 'start-up';
       this.overrideJobId = this.currentJobId;
+      this.isActive = true;
     } else if (status === 'shutting-down') {
       await this.startShutdown();
       this.overrideStatus = 'shutting-down';
       this.overrideJobId = this.currentJobId;
+      this.isActive = false;
     } else {
       throw new Error(`Invalid status: ${status}`);
     }
@@ -93,6 +96,9 @@ class PrinterController {
         this.overrideStatus = undefined;
         this.overrideJobId = undefined;
       }
+    }
+    if (!this.isActive) {
+      return 'inactive';
     }
     return this.prusaLink.getPrinterStatus();
   }
