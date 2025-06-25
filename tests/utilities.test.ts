@@ -13,7 +13,7 @@ describe('flattenConfigParameters', () => {
         },
       },
       width: { content: [{ value: 20 }, { value: 25 }], parameters: {} },
-      height: { content: [{ value: 1 }], parameters: {} },
+      height: { content: [{ value: 10 }], parameters: {} },
       'top-surface': {
         content: [],
         parameters: {
@@ -68,9 +68,9 @@ describe('flattenConfigParameters', () => {
     expect(result.MODEL_SIZE).toEqual([30]);
   });
 
-  it('clamps height at 0.5 cm when converting to layers', () => {
+  it('clamps height at 5 mm when converting to layers', () => {
     const params: Record<string, ConfigParamDef> = {
-      height: { content: [{ value: 10 }], parameters: {} },
+      height: { content: [{ value: 100 }], parameters: {} },
     } as any;
 
     const result = flattenConfigParameters(params);
