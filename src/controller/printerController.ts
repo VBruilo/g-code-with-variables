@@ -103,7 +103,11 @@ class PrinterController {
       }
     }
     if (!this.isActive) {
-      return 'inactive';
+      return {
+          status: 'inactive',
+          temp_bed: 0,
+          temp_nozzle: 0,
+        };
     }
     return this.prusaLink.getPrinterStatus();
   }
