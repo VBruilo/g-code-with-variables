@@ -95,11 +95,17 @@ class PrinterController {
       const jobId = await this.prusaLink.getCurrentJobId();
 
       if (jobId && this.overrideJobId && jobId === this.overrideJobId) {
-        return { status: this.overrideStatus, temp_bed };
+        return { 
+          status: this.overrideStatus, 
+          temp_bed: temp_bed 
+        };
       }
 
-      if (this.overrideStatus === 'shutting-down' && temp_bed >= 21) {
-        return { status: 'shutting-down', temp_bed };
+      if (this.overrideStatus === 'shutting-down' && temp_bed >= 15) {
+        return { 
+          status: 'shutting-down', 
+          temp_bed: temp_bed 
+        };
       }
 
       if (jobId !== this.overrideJobId) {
@@ -109,7 +115,10 @@ class PrinterController {
     }
 
     if (!this.isActive) {
-      return { status: 'inactive', temp_bed };
+      return { 
+        status: 'inactive', 
+        temp_bed: temp_bed
+      };
     }
 
     return current;
