@@ -37,6 +37,12 @@ afterEach(() => {
 });
 
 describe('PUT then GET /api/printer/status integration', () => {
+  it('returns inactive before startup', async () => {
+    const res = await request(app).get('/api/printer/status');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ status: 'inactive' });
+  });
+
   it('returns overridden status', async () => {
     const putRes = await request(app)
       .put('/api/printer/status')
@@ -60,5 +66,19 @@ describe('PUT then GET /api/printer/status integration', () => {
 
     const second = await request(app).get('/api/printer/status');
     expect(second.body).toEqual({ status: 'from-prusa' });
+  });
+
+  it('returns inactive after shutdown completes', async () => {
+    getCurrentJobIdMock.mockResolvedValueOnce('job1'); // startShutdown
+    getCurrentJobIdMock.mockResolvedValueOnce('job1'); // first GET (override)
+    getCurrentJobIdMock.mockResolvedValueOnce('job2'); // second GET (job finished)
+
+    await request(app).put('/api/printer/status').send({ status: 'shutting-down' });
+
+    const first = await request(app).get('/api/printer/status');
+    expect(first.body).toEqual({ status: 'shutting-down' });
+
+    const second = await request(app).get('/api/printer/status');
+    expect(second.body).toEqual({ status: 'inactive' });
   });
 });
