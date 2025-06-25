@@ -72,9 +72,8 @@ export class PrusaLinkService {
       const state: string | undefined = data?.printer?.state;
 
       const isPrinterHotEnough = data?.printer?.temp_bed >= 50;
-      const isPrinterHotEnoughExtruder = data?.printer?.temp_nozzle >= 150;
 
-      if (state === 'FINISHED' && isPrinterHotEnough && isPrinterHotEnoughExtruder) {
+      if (state === 'FINISHED' && isPrinterHotEnough) {
         return {
           status: 'ready-for-print',
           temp_bed: data?.printer?.temp_bed,
