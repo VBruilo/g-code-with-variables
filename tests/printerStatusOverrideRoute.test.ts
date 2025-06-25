@@ -10,7 +10,9 @@ jest.mock('../src/controller/printerController', () => {
     uploadAndPrint = jest.fn().mockResolvedValue(undefined);
     getCurrentJobId = getCurrentJobIdMock;
 
-    getPrinterStatus = jest.fn().mockResolvedValue('from-prusa');
+    getPrinterStatus = jest
+      .fn()
+      .mockResolvedValue({ status: 'from-prusa', temp_bed: 0 });
     getPrintStatus = jest.fn();
     pauseJob = jest.fn();
     resumeJob = jest.fn();
@@ -24,6 +26,7 @@ jest.mock('../src/controller/printerController', () => {
   return { printerController: controller, PrinterController };
 });
 
+import { printerController } from '../src/controller/printerController';
 import router from '../src/routes/controllerRoutes';
 
 const app = express();
@@ -40,7 +43,7 @@ describe('PUT then GET /api/printer/status integration', () => {
   it('returns inactive before startup', async () => {
     const res = await request(app).get('/api/printer/status');
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: 'inactive' });
+    expect(res.body).toEqual({ status: 'inactive', temp_bed: 0 });
   });
 
   it('returns overridden status', async () => {
@@ -51,7 +54,7 @@ describe('PUT then GET /api/printer/status integration', () => {
 
     const getRes = await request(app).get('/api/printer/status');
     expect(getRes.status).toBe(200);
-    expect(getRes.body).toEqual({ status: 'start-up' });
+    expect(getRes.body).toEqual({ status: 'start-up', temp_bed: 0 });
   });
 
   it('clears override when job id changes', async () => {
@@ -62,23 +65,41 @@ describe('PUT then GET /api/printer/status integration', () => {
     await request(app).put('/api/printer/status').send({ status: 'start-up' });
 
     const first = await request(app).get('/api/printer/status');
-    expect(first.body).toEqual({ status: 'start-up' });
+    expect(first.body).toEqual({ status: 'start-up', temp_bed: 0 });
 
     const second = await request(app).get('/api/printer/status');
-    expect(second.body).toEqual({ status: 'from-prusa' });
+    expect(second.body).toEqual({ status: 'from-prusa', temp_bed: 0 });
   });
 
-  it('returns inactive after shutdown completes', async () => {
+  it('keeps shutting-down status until bed cools', async () => {
+    const prusaLink = (printerController as any).prusaLink;
+
     getCurrentJobIdMock.mockResolvedValueOnce('job1'); // startShutdown
     getCurrentJobIdMock.mockResolvedValueOnce('job1'); // first GET (override)
+    (prusaLink.getPrinterStatus as jest.Mock).mockResolvedValueOnce({
+      status: 'from-prusa',
+      temp_bed: 30,
+    });
     getCurrentJobIdMock.mockResolvedValueOnce('job2'); // second GET (job finished)
+    (prusaLink.getPrinterStatus as jest.Mock).mockResolvedValueOnce({
+      status: 'from-prusa',
+      temp_bed: 25,
+    });
+    getCurrentJobIdMock.mockResolvedValueOnce('job2'); // third GET (cool below threshold)
+    (prusaLink.getPrinterStatus as jest.Mock).mockResolvedValueOnce({
+      status: 'from-prusa',
+      temp_bed: 20,
+    });
 
     await request(app).put('/api/printer/status').send({ status: 'shutting-down' });
 
     const first = await request(app).get('/api/printer/status');
-    expect(first.body).toEqual({ status: 'shutting-down' });
+    expect(first.body).toEqual({ status: 'shutting-down', temp_bed: 30 });
 
     const second = await request(app).get('/api/printer/status');
-    expect(second.body).toEqual({ status: 'inactive' });
+    expect(second.body).toEqual({ status: 'shutting-down', temp_bed: 25 });
+
+    const third = await request(app).get('/api/printer/status');
+    expect(third.body).toEqual({ status: 'inactive', temp_bed: 20 });
   });
 });

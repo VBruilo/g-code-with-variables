@@ -9,13 +9,16 @@ const app = createTestApp();
 
 describe('GET /api/printer/status', () => {
   it('returns mapped printer status', async () => {
-    (printerController.getPrinterStatus as jest.Mock).mockResolvedValue('ready-for-print');
+    (printerController.getPrinterStatus as jest.Mock).mockResolvedValue({
+      status: 'ready-for-print',
+      temp_bed: 55,
+    });
 
     const res = await request(app).get('/api/printer/status');
 
     expect(printerController.getPrinterStatus).toHaveBeenCalled();
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: 'ready-for-print' });
+    expect(res.body).toEqual({ status: 'ready-for-print', temp_bed: 55 });
   });
 
   it('handles failures with 500', async () => {
