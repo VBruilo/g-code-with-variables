@@ -86,28 +86,33 @@ class PrinterController {
 
   /**
    * Retrieves the current status of the printer from PrusaLink.
-   */
+  */
   public async getPrinterStatus(): Promise<PrinterStatus> {
+    const current = await this.prusaLink.getPrinterStatus();
+    const temp_bed = current.temp_bed || 0;
+
     if (this.overrideStatus) {
       const jobId = await this.prusaLink.getCurrentJobId();
+
       if (jobId && this.overrideJobId && jobId === this.overrideJobId) {
-        return {
-          status: this.overrideStatus,
-          temp_bed: (await this.prusaLink.getPrinterStatus()).temp_bed || 0,
-        };
+        return { status: this.overrideStatus, temp_bed };
       }
+
+      if (this.overrideStatus === 'shutting-down' && temp_bed >= 21) {
+        return { status: 'shutting-down', temp_bed };
+      }
+
       if (jobId !== this.overrideJobId) {
         this.overrideStatus = undefined;
         this.overrideJobId = undefined;
       }
     }
+
     if (!this.isActive) {
-      return {
-          status: 'inactive',
-          temp_bed: (await this.prusaLink.getPrinterStatus()).temp_bed || 0,
-        };
+      return { status: 'inactive', temp_bed };
     }
-    return this.prusaLink.getPrinterStatus();
+
+    return current;
   }
 
   /**
