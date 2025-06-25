@@ -3213,7 +3213,7 @@ M104 T2 S175
 M104 T3 S175
 M104 T4 S175
 
-M140 S60 ; set bed temp
+M140 S50 ; set bed temp
 
 M221 S100
 
