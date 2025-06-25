@@ -2076,7 +2076,7 @@ G28 Z
 G0 Z5 ; add Z clearance
 
 M104 T0 S175 ; set idle temp
-M190 S80 ; wait for bed temp
+M190 S60 ; wait for bed temp
 
 ;G29 G ; absorb heat
 
