@@ -101,7 +101,7 @@ class PrinterController {
         };
       }
 
-      if (this.overrideStatus === 'shutting-down' && temp_bed >= 15) {
+      if (this.overrideStatus === 'shutting-down' && temp_bed >= 35) {
         return { 
           status: 'shutting-down', 
           temp_bed: temp_bed 

@@ -71,7 +71,7 @@ export class PrusaLinkService {
       const data: any = resp.data;
       const state: string | undefined = data?.printer?.state;
 
-      const isPrinterHotEnough = data?.printer?.temp_bed >= 50;
+      const isPrinterHotEnough = data?.printer?.temp_bed >= 35;
 
       if (state === 'FINISHED' && isPrinterHotEnough) {
         return {
