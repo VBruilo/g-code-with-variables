@@ -102,6 +102,22 @@ describe('flattenConfigParameters', () => {
     expect(result.FIRST_PRINTING_HEAD).toBe(0);
     expect(result.SECOND_PRINTING_HEAD).toBe(0);
   });
+
+  it('uses default coordinates when values are out of range', () => {
+    const params: Record<string, ConfigParamDef> = {
+      coordinates: {
+        content: [],
+        parameters: {
+          x: { content: [{ value: 400 }], parameters: {} },
+          y: { content: [{ value: -10 }], parameters: {} },
+        },
+      },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.POS_X).toBe(0);
+    expect(result.POS_Y).toBe(0);
+  });
 });
 
 describe('parseParams', () => {
