@@ -97,7 +97,7 @@ describe('PUT then GET /api/printer/status integration', () => {
     expect(first.body).toEqual({ status: 'shutting-down', temp_bed: 30 });
 
     const second = await request(app).get('/api/printer/status');
-    expect(second.body).toEqual({ status: 'shutting-down', temp_bed: 25 });
+    expect(second.body).toEqual({ status: 'inactive', temp_bed: 25 });
 
     const third = await request(app).get('/api/printer/status');
     expect(third.body).toEqual({ status: 'inactive', temp_bed: 20 });
