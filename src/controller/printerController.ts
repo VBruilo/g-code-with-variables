@@ -39,7 +39,8 @@ class PrinterController {
     try {
       const params = await this.configService.fetchParameters(machineConfigID, configSetID);
       gcode = await this.gcodeService.createFinalGcode(params);
-    } catch {
+    } catch (err){
+      console.error('[PrinterController] Failed to fetch parameters, falling back to saved G-code', err);
       gcode = await this.gcodeService.loadFinalGcode();
       if (!gcode) {
         gcode = await this.gcodeService.createFinalGcode({} as any);
