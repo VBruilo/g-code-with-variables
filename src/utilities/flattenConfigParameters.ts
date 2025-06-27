@@ -114,11 +114,21 @@ export function flattenConfigParameters(
     const x = coords.parameters['x'];
     const y = coords.parameters['y'];
     if (x?.content.length) {
-      result.POS_X = Number(x.content[0].value);
+      const val = Number(x.content[0].value);
+      if (val >= 0 && val <= 330) {
+        result.POS_X = val;
+      } else {
+        result.POS_X = Number(defaultParams.POS_X);
+      }
     }
     if (y?.content.length) {
-      result.POS_Y = Number(y.content[0].value);
-    } 
+      const val = Number(y.content[0].value);
+      if (val >= 0 && val <= 330) {
+        result.POS_Y = val;
+      } else {
+        result.POS_Y = Number(defaultParams.POS_Y);
+      }
+    }
   }
 
   return result;
