@@ -64,4 +64,27 @@ describe('GcodeService', () => {
       'utf-8'
     );
   });
+
+  it('loads final gcode when present', async () => {
+    readFileMock.mockResolvedValueOnce('FINAL');
+    const service = new GcodeService(new GCodeTransformer() as any);
+    const final = await service.loadFinalGcode();
+    expect(final).toBe('FINAL');
+    expect(readFileMock).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('gcode', 'print_ready', 'final.gcode')),
+      'utf-8'
+    );
+  });
+
+  it('returns null when final gcode is missing', async () => {
+    const enoent = Object.assign(new Error('no'), { code: 'ENOENT' });
+    readFileMock.mockRejectedValueOnce(enoent);
+    const service = new GcodeService(new GCodeTransformer() as any);
+    const final = await service.loadFinalGcode();
+    expect(final).toBeNull();
+    expect(readFileMock).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('gcode', 'print_ready', 'final.gcode')),
+      'utf-8'
+    );
+  });
 });
