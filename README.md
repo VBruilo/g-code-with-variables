@@ -1,9 +1,7 @@
 # Parameterized G-Code
 
-A TypeScript-based server for generating parameterized G-code for additive manufacturing. The project contains two components:
+A TypeScript-based server for generating parameterized G-code for additive manufacturing. The application communicates with a PrusaLink printer to create final G-code files.
 
-1. **Mock Config Server** – small Express server serving example configuration values.
-2. **Parameterized G-Code Server** – the main application that creates final G-code and communicates with a PrusaLink printer.
 
 ## Prerequisites
 
@@ -18,17 +16,6 @@ yarn install
 
 ## Running the Servers
 
-### Start the Mock Config Server
-
-```sh
-cd mock-config-server
-node index.js
-```
-After starting, you should see:
-```
-Mock Config Server listening on port 3011
-```
-
 ### Start the Main Server
 
 From the repository root:
@@ -36,22 +23,9 @@ From the repository root:
 yarn dev
 ```
 
-### Example Request
-
-With both servers running, execute:
-```sh
-cd mock-config-server
-node callPrint.js
-```
-This sends a request to the main server and demonstrates expected behaviour.
-
 ## Project Structure
 
 ```
-mock-config-server/          # Express mock server
-  index.js
-  callPrint.js
-  package.json
 src/                         # Main server source
   config.ts                  # Environment configuration
   controller/                # Controllers
@@ -63,8 +37,7 @@ src/                         # Main server source
   types/                     # Interfaces
   utilities/                 # Utilities Functions
   server.ts                  # Application entrypoint
-parameterized_g-code/        # G-code templates and output
-gcode/                      # G-code templates for logo or body
+gcode/                      # G-code templates and outputs
 ```
 
 ## Environment Variables

@@ -34,12 +34,12 @@ describe('GcodeService', () => {
     const result = await service.createFinalGcode(params);
 
     expect(readFileMock).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('parameterized_g-code', 'PLA_start_G-code.gcode')),
+      expect.stringContaining(path.join('gcode', 'templates', 'PLA_start_G-code.gcode')),
       'utf-8'
     );
     expect(transformer.transformGCode).toHaveBeenCalledWith('TEMPLATE', params);
     expect(writeFileMock).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('parameterized_g-code', 'final.gcode')),
+      expect.stringContaining(path.join('gcode', 'print_ready', 'final.gcode')),
       'FINAL',
       'utf-8'
     );

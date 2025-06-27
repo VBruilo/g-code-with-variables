@@ -41,12 +41,12 @@ export class GcodeService {
     const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value || 'PETG';
     const templateFile = this.getTemplateFile(String(filamentType));
 
-    const gcodeFilePath = path.join(process.cwd(), 'parameterized_g-code', templateFile);
+    const gcodeFilePath = path.join(process.cwd(), 'gcode', 'templates', templateFile);
     const gcodeContent = await fs.readFile(gcodeFilePath, 'utf-8');
 
     const finalGCode = await this.transformer.transformGCode(gcodeContent, rawParams);
 
-    const outputFilePath = path.join(process.cwd(), 'parameterized_g-code', 'final.gcode');
+    const outputFilePath = path.join(process.cwd(), 'gcode', 'print_ready', 'final.gcode');
     await fs.writeFile(outputFilePath, finalGCode, 'utf-8');
 
     return finalGCode;

@@ -1,6 +1,7 @@
-# Node modules (Hauptverzeichnis und Unterverzeichnisse)
+
 node_modules/
-mock-octo/mock_uploads
+mock-octo/
+mock-config-server/
 # Build- und dist-Ordner
 dist/
 
@@ -20,6 +21,3 @@ yarn-error.log*
 
 .DS_Store
 
-# G-Code Dateien
-
-node_modules
