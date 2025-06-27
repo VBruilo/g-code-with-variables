@@ -76,6 +76,32 @@ describe('flattenConfigParameters', () => {
     const result = flattenConfigParameters(params);
     expect(result.LAYERS).toBe(15);
   });
+
+  it('uses defaults when printing head numbers are out of range', () => {
+    const params: Record<string, ConfigParamDef> = {
+      'coin-color': {
+        content: [],
+        parameters: {
+          'coin-printing-head-no': { content: [{ value: 7 }], parameters: {} },
+        },
+      },
+      'top-surface': {
+        content: [],
+        parameters: {
+          'logo-color': {
+            content: [],
+            parameters: {
+              'coin-printing-head-no': { content: [{ value: 0 }], parameters: {} },
+            },
+          },
+        },
+      },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.FIRST_PRINTING_HEAD).toBe(0);
+    expect(result.SECOND_PRINTING_HEAD).toBe(0);
+  });
 });
 
 describe('parseParams', () => {

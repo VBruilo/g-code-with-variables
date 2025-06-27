@@ -1,6 +1,7 @@
 // src/utilities/flattenConfigParameters.ts
 
 import { ConfigParamDef } from '../types/configServer';
+import defaultParams from './defaultParameters.json';
 
 /**
  * Available model sizes. Used to map width values to the nearest
@@ -42,7 +43,12 @@ export function flattenConfigParameters(
   if (coinColor) {
     const first_head = coinColor.parameters['coin-printing-head-no'];
     if (first_head?.content.length) {
-      result.FIRST_PRINTING_HEAD = (Number(first_head.content[0].value)-1);
+      const val = Number(first_head.content[0].value);
+      if (val >= 1 && val <= 5) {
+        result.FIRST_PRINTING_HEAD = val - 1;
+      } else {
+        result.FIRST_PRINTING_HEAD = Number(defaultParams.FIRST_PRINTING_HEAD);
+      }
     }
     const first_mat = coinColor.parameters['coin-material'];
     if (first_mat?.content.length) {
@@ -80,7 +86,12 @@ export function flattenConfigParameters(
     const logo_color = top.parameters['logo-color'];
     const second_head = logo_color.parameters['coin-printing-head-no'];
     if (second_head?.content.length) {
-      result.SECOND_PRINTING_HEAD = (Number(second_head.content[0].value)-1);
+      const val = Number(second_head.content[0].value);
+      if (val >= 1 && val <= 5) {
+        result.SECOND_PRINTING_HEAD = val - 1;
+      } else {
+        result.SECOND_PRINTING_HEAD = Number(defaultParams.SECOND_PRINTING_HEAD);
+      }
     }
     const second_mat = top.parameters['logo-material'];
     if (second_mat?.content.length) {
