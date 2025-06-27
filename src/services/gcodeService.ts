@@ -38,7 +38,9 @@ export class GcodeService {
    * @returns Rendered G-code ready for printing.
    */
   async createFinalGcode(rawParams: Record<string, ConfigParamDef>): Promise<string> {
-    const filamentType = rawParams["coin-color"].parameters["coin-material"].content[0].value || 'PETG';
+    const filamentType =
+      rawParams?.["coin-color"]?.parameters?.["coin-material"]?.content?.[0]?.value ||
+      'PETG';
     const templateFile = this.getTemplateFile(String(filamentType));
 
     const gcodeFilePath = path.join(process.cwd(), 'gcode', 'templates', templateFile);

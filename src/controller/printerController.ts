@@ -35,8 +35,17 @@ class PrinterController {
    * @returns The job ID assigned by PrusaLink.
    */
   public async startPrint(machineConfigID: string, configSetID: string): Promise<string> {
-    const params = await this.configService.fetchParameters(machineConfigID, configSetID);
-    const gcode = await this.gcodeService.createFinalGcode(params);
+    let gcode: string | null;
+    try {
+      const params = await this.configService.fetchParameters(machineConfigID, configSetID);
+      gcode = await this.gcodeService.createFinalGcode(params);
+    } catch {
+      gcode = await this.gcodeService.loadFinalGcode();
+      if (!gcode) {
+        gcode = await this.gcodeService.createFinalGcode({} as any);
+      }
+    }
+
     await this.prusaLink.uploadAndPrint(gcode);
     this.currentJobId = await this.prusaLink.getCurrentJobId() || undefined;
     if (!this.currentJobId) {
