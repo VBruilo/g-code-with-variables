@@ -67,4 +67,21 @@ export class GcodeService {
     const shutdownPath = path.join(process.cwd(), 'gcode', 'printer_control', 'shutting-down.gcode');
     return fs.readFile(shutdownPath, 'utf-8');
   }
+
+  /**
+   * Loads the final generated G-code from disk if present.
+   *
+   * @returns The final G-code contents or `null` when the file does not exist.
+   */
+  async loadFinalGcode(): Promise<string | null> {
+    const finalPath = path.join(process.cwd(), 'gcode', 'print_ready', 'final.gcode');
+    try {
+      return await fs.readFile(finalPath, 'utf-8');
+    } catch (err: any) {
+      if (err && err.code === 'ENOENT') {
+        return null;
+      }
+      throw err;
+    }
+  }
 }
