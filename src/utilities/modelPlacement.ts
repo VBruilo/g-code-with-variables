@@ -106,16 +106,19 @@ export function calculateLayout(models: LoadedModel[], parsed: ParsedParams): Pl
 export function insertModelBlocks(
   template: string,
   placements: Placement[],
-  logoSnippet: string): string {
+  logoSnippets: string[]
+): string {
     const placeholderRegex = /;;\s*MODELS_PLACEHOLDER/;
     let assembled = '';
-    for (const { model, offsetX, offsetY } of placements) {
-    // G92 and G1 logic isn’t relevant right now because only one model will be used
+    for (let i = 0; i < placements.length; i++) {
+      const { model, offsetX, offsetY } = placements[i];
+      // G92 and G1 logic isn’t relevant right now because only one model will be used
 
       //assembled += `G1 X${offsetX} Y${offsetY}\n`;
       //assembled += `G92 X0 Y0\n`;
       assembled += model.content + '\n';
-      assembled += logoSnippet + '\n';
+      const snippet = logoSnippets[i < logoSnippets.length ? i : logoSnippets.length - 1];
+      assembled += snippet + '\n';
       //assembled += `G1 X-${offsetX} Y-${offsetY}\n`;
       //assembled += `G92 X0 Y0\n`;
     }

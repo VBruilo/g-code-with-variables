@@ -42,7 +42,7 @@ describe('modelPlacement utilities', () => {
       { model: { meta: { size: 1, path: '', boundingBox: { width: 1, depth: 1 } }, content: 'A' }, offsetX: 0, offsetY: 0 },
       { model: { meta: { size: 1, path: '', boundingBox: { width: 1, depth: 1 } }, content: 'B' }, offsetX: 10, offsetY: 10 },
     ];
-    const result = insertModelBlocks(template, placements, 'L');
+    const result = insertModelBlocks(template, placements, ['L']);
     expect(result).toBe('START\nA\nL\nB\nL\nEND');
   });
 });

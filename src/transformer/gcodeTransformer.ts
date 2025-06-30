@@ -62,8 +62,13 @@ export class GCodeTransformer {
     const parsed = parseParams(mergedParams);
     const loaded = await loadModels(parsed);
     const placements = calculateLayout(loaded, parsed);
-    const logoSnippet = await loadSnippet('logo', String(mergedParams.LOGO))
-    const modelBlocks = insertModelBlocks(template, placements, logoSnippet);
+
+    const logoParam = mergedParams.LOGO;
+    const logos = Array.isArray(logoParam)
+      ? await Promise.all(logoParam.map((l: string | number) => loadSnippet('logo', String(l))))
+      : [await loadSnippet('logo', String(logoParam))];
+
+    const modelBlocks = insertModelBlocks(template, placements, logos);
     return modelBlocks;
   }
 

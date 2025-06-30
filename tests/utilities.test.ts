@@ -1,5 +1,6 @@
 import { flattenConfigParameters } from '../src/utilities/flattenConfigParameters';
 import { parseParams, extractTemplate } from '../src/utilities/gcodeUtils';
+import defaultParams from '../src/utilities/defaultParameters.json';
 import { ConfigParamDef } from '../src/types/configServer';
 
 describe('flattenConfigParameters', () => {
@@ -42,7 +43,7 @@ describe('flattenConfigParameters', () => {
       FIRST_FILAMENT_TYPE: 'PLA',
       MODEL_SIZE: [20, 25.75],
       LAYERS: 15,
-      LOGO: 'LOGO',
+      LOGO: ['LOGO'],
       SECOND_PRINTING_HEAD: 1,
       SECOND_FILAMENT_TYPE: 'ABS',
       POS_X: 5,
@@ -99,8 +100,8 @@ describe('flattenConfigParameters', () => {
     } as any;
 
     const result = flattenConfigParameters(params);
-    expect(result.FIRST_PRINTING_HEAD).toBe(0);
-    expect(result.SECOND_PRINTING_HEAD).toBe(0);
+    expect(result.FIRST_PRINTING_HEAD).toBe(Number(defaultParams.FIRST_PRINTING_HEAD));
+    expect(result.SECOND_PRINTING_HEAD).toBe(Number(defaultParams.SECOND_PRINTING_HEAD));
   });
 
   it('uses default coordinates when values are out of range', () => {
@@ -115,8 +116,8 @@ describe('flattenConfigParameters', () => {
     } as any;
 
     const result = flattenConfigParameters(params);
-    expect(result.POS_X).toBe(0);
-    expect(result.POS_Y).toBe(0);
+    expect(result.POS_X).toBe(Number(defaultParams.POS_X));
+    expect(result.POS_Y).toBe(Number(defaultParams.POS_Y));
   });
 });
 

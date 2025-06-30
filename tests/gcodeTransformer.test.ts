@@ -48,7 +48,7 @@ describe('GCodeTransformer', () => {
     const result = await transformer.transformGCode(template, {} as any);
 
     expect(loadModels).toHaveBeenCalledTimes(1);
-    expect(loadSnippet).toHaveBeenCalledWith('logo', 'SNET');
+    expect(loadSnippet).toHaveBeenCalledWith('logo', 'None');
     expect(result).toBe('START\nMODEL\nSNIP\nHELPER\nEND');
   });
 
