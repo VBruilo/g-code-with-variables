@@ -51,6 +51,22 @@ describe('flattenConfigParameters', () => {
     });
   });
 
+  it('splits comma separated logos into array', () => {
+    const params: Record<string, ConfigParamDef> = {
+      'top-surface': {
+        content: [],
+        parameters: {
+          logo: { content: [{ value: 'SNET,PROCEED,TUB' }], parameters: {} },
+          'logo-color': { content: [], parameters: {} },
+          'logo-material': { content: [], parameters: {} },
+        },
+      },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.LOGO).toEqual(['SNET', 'PROCEED', 'TUB']);
+  });
+
   it('rounds width values to nearest allowed size', () => {
     const params: Record<string, ConfigParamDef> = {
       width: { content: [{ value: 21 }, { value: 22 }], parameters: {} },

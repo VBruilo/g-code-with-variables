@@ -81,7 +81,12 @@ export function flattenConfigParameters(
   if (top) {
     const logo = top.parameters['logo'];
     if (logo?.content.length) {
-      result.LOGO = logo.content.map(c => String(c.value));
+      result.LOGO = logo.content
+        .flatMap(c => String(c.value)
+          .split(',')
+          .map(v => v.trim())
+          .filter(Boolean)
+        );
     }
     const logo_color = top.parameters['logo-color'];
     const second_head = logo_color.parameters['coin-printing-head-no'];
