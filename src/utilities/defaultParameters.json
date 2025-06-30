@@ -5,7 +5,7 @@
     "POS_X": 165,
     "POS_Y": 10,
     "MODEL_SIZE": [20],
-    "LOGO": "None",
+    "LOGO": ["None"],
     "SECOND_PRINTING_HEAD": "1",
     "SECOND_FILAMENT_TYPE": "PETG",
     "_comment" : "Temperatures have be extracted from the original G-Code file with manually",
