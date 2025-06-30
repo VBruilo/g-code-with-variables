@@ -59,7 +59,28 @@ export function flattenConfigParameters(
   // 2) width
   const width = params['width'];
   if (width?.content.length) {
-    result.MODEL_SIZE = width.content.map(c => nearestModelSize(Number(c.value)));
+    const values: number[] = [];
+    for (const c of width.content) {
+      let raw: any[] = [];
+      const val: any = (c as any).value;
+      if (Array.isArray(val)) {
+        raw = val;
+      } else {
+        raw = String(val)
+          .split(',')
+          .map(v => v.trim())
+          .filter(v => v.length > 0);
+      }
+      for (const r of raw) {
+        const num = Number(r);
+        if (!Number.isNaN(num)) {
+          values.push(nearestModelSize(num));
+        }
+      }
+    }
+    if (values.length) {
+      result.MODEL_SIZE = values;
+    }
   }
 
   // 3) height
