@@ -85,6 +85,24 @@ describe('flattenConfigParameters', () => {
     expect(result.MODEL_SIZE).toEqual([30]);
   });
 
+  it('handles width arrays and rounds each value', () => {
+    const params: Record<string, ConfigParamDef> = {
+      width: { content: [{ value: ['20.00', '30.00', '23.25'] }], parameters: {} },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.MODEL_SIZE).toEqual([20, 30, 23.25]);
+  });
+
+  it('handles comma separated width strings', () => {
+    const params: Record<string, ConfigParamDef> = {
+      width: { content: [{ value: '20.00,30.00,23.25' }], parameters: {} },
+    } as any;
+
+    const result = flattenConfigParameters(params);
+    expect(result.MODEL_SIZE).toEqual([20, 30, 23.25]);
+  });
+
   it('clamps height at 5 mm when converting to layers', () => {
     const params: Record<string, ConfigParamDef> = {
       height: { content: [{ value: 100 }], parameters: {} },
