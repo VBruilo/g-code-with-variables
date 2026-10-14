@@ -23,6 +23,7 @@ describe('config module', () => {
 
   it('falls back to defaults', () => {
     const cfg = require('../src/config');
-    expect(cfg.CONFIG_SERVER_URL).toMatch('research.snet.tu-berlin.de');
+    expect(cfg.CONFIG_SERVER_URL).toBe('http://localhost:3011');
+    expect(cfg.PRUSALINK_API_KEY).toBe('');
   });
 });

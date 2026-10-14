@@ -44,7 +44,7 @@ gcode/                      # G-code templates and outputs
 
 - `CONFIG_SERVER_URL` – configuration server base URL (default `http://localhost:3011`)
 - `PRUSALINK_URL` – PrusaLink instance URL (default `http://192.168.12.20`)
-- `PRUSALINK_API_KEY` – API key for PrusaLink (default `GGLfRCFkCEFXrEN`)
+- `PRUSALINK_API_KEY` – API key for PrusaLink (required, no default)
 
 ## API Endpoints
 
